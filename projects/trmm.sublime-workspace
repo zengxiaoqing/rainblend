@@ -1,0 +1,332 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"file",
+				"file_pr_50km_RCM"
+			],
+			[
+				"sepa",
+				"separated_comas_list"
+			],
+			[
+				"files",
+				"files_pr_50km"
+			],
+			[
+				"period_50",
+				"period_50km_historical"
+			],
+			[
+				"model_list_2d",
+				"models_list_2deg_HadGEM"
+			],
+			[
+				"model",
+				"models_list_2deg"
+			],
+			[
+				"per",
+				"period_2deg_historical"
+			],
+			[
+				"tasm",
+				"tasmax_file_root"
+			],
+			[
+				"file_tas_",
+				"file_tasmax_RCM"
+			],
+			[
+				"file_tas",
+				"file_tasmax_RCM_ref"
+			],
+			[
+				"in_path_RCM_tas_",
+				"in_path_RCM_tas_12km"
+			],
+			[
+				"fies",
+				"file_tas_RCM"
+			],
+			[
+				"out",
+				"out_path_RCM_tas"
+			],
+			[
+				"in_",
+				"in_path_RCM_tas_2deg"
+			],
+			[
+				"nobac",
+				"nobackup_stepanov"
+			],
+			[
+				"re",
+				"remote_path_plus_file"
+			],
+			[
+				"path_pr_",
+				"path_pr_0p44deg"
+			],
+			[
+				"target_grid_",
+				"target_grid_0p44deg"
+			],
+			[
+				"data",
+				"data_path"
+			],
+			[
+				"path",
+				"path_pr_reg"
+			],
+			[
+				"pa",
+				"path_pr"
+			],
+			[
+				"remap",
+				"remap_method"
+			],
+			[
+				"regular",
+				"regular_grid"
+			],
+			[
+				"path_dest_tas",
+				"path_dest_tasmin"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/usr/people/stepanov/python_scripts/TRMM/compare_TRMM_SACA_land_only.py",
+			"settings":
+			{
+				"buffer_size": 9342,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 92.0,
+		"selected_items":
+		[
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Package Control: List Packages"
+			],
+			[
+				"",
+				"Package Control: List Packages"
+			],
+			[
+				"pac",
+				"Preferences: Browse Packages"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 146.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/usr/people/stepanov/python_scripts/test2.py",
+		"/usr/people/stepanov/python_scripts/test3.py",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_RCM_PRECIP_50km_bp_1981_2010.py",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_RCM_tasmax_2deg_bp_1981_2010.py",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_RCM_tasmin_2deg_bp_1981_2010.py",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_RCM_PRECIP_2deg_bp_1981_2010.py",
+		"/usr/people/stepanov/python_scripts/test1.py",
+		"/usr/people/stepanov/sh_scripts/download_pr_tas_50km.sh",
+		"/usr/people/stepanov/sh_scripts/download_pr_tas_50km_RCM_historical.sh",
+		"/usr/people/stepanov/sh_scripts/download_pr_tas_2degskm_RCM_historical.sh",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_RCM_PRECIP_bp_1981_2010.py",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_RCM_R95_TX90_RR_FD_bp_1981_2010.py",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax_2degs_RCM_historical.sh",
+		"/usr/people/stepanov/sh_scripts/download_pr_tas_0p11degs_RCM_historical.sh",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax_0p11degs_RCP_historical.sh",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_RCM.py",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax_50km_RCM_historical.sh",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax_50km.sh",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax_0p11degs_RCM_historical.sh",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax_2degs.sh",
+		"/usr/people/stepanov/sh_scripts/test.sh",
+		"/usr/people/stepanov/python_scripts/calc_indices_icclim_EOBS.py",
+		"/usr/people/stepanov/sh_scripts/regrid_RCM_pr_tas_to_regular_grid.sh",
+		"/usr/people/stepanov/sh_scripts/regrid_RCM_50km_pr_tas_to_regular_grid.sh",
+		"/usr/people/stepanov/python_scripts/icclim_temperature_min_max.py",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax_0p11degs.sh",
+		"/usr/people/stepanov/sh_scripts/download_pr_tas_0p11degs.sh",
+		"/usr/people/stepanov/sh_scripts/download_pr_tas_2degs.sh",
+		"/usr/people/stepanov/sh_scripts/download_pr_tas.sh",
+		"/usr/people/stepanov/sh_scripts/download_tasmin_tasmax.sh",
+		"/usr/people/stepanov/sh_scripts/download_script.sh",
+		"/usr/people/stepanov/.config/sublime-text-2/Packages/User/Preferences.sublime-settings"
+	],
+	"find":
+	{
+		"height": 38.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"2deg",
+			"pr",
+			"pp",
+			"pr",
+			"pp",
+			"pr",
+			"pp",
+			"pr",
+			"50km",
+			"2deg",
+			"tasmax",
+			"tasmin",
+			"tg",
+			"file_ave_temp",
+			"r1"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/usr/people/stepanov/python_scripts/TRMM/compare_TRMM_SACA_land_only.py",
+					"settings":
+					{
+						"buffer_size": 9342,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								247,
+								247
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 281.0
+	},
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}
