@@ -63,15 +63,6 @@ saca_precip = nc_SACA_rr.variables['rr'][12053,:,:]        # 12053 = 01.Jan.2014
 # 1-12418 in ncview, but python counts 0-12417
 
 
-# Create netCDF files
-binary_LS_MASK_TRMM = Dataset(in_path_lsmsk_TRMM+'test_lsmask_binary.nc','w', format='NETCDF4_CLASSIC') 
-
-# level = dataset.createDimension('level', 10) 
-lat = binary_LS_MASK_TRMM.createDimension('latitude', 201)
-lon = binary_LS_MASK_TRMM.createDimension('longitude', 400) 
-time = binary_LS_MASK_TRMM.createDimension('time', None ) 
-
-
 
 # Some data pre-processing
 #===========================================================================================
@@ -95,13 +86,42 @@ print
 print "TRMM precip is: ", trmm_precip
 print
 
-# variable
-ls_mask_trmm = binary_LS_MASK_TRMM.createVariable('ls_mask_trmm', trmm_lsmask,'d', ('latitude','longitude'))
 
-# v = f.createVariable('cmplx_var',complex128_t,'x_dim')
+# Create netCDF files
+sweep_xy = Dataset(in_path_lsmsk_TRMM+'NASA_lsmask_binary.nc','w', format='NETCDF4_CLASSIC') 
+# level = dataset.createDimension('level', 10) 
+# sweep_xy = binary_LS_MASK_TRMM.createGroup('sweep_xy')
+
+# Dimensions
+lat = sweep_xy.createDimension('latitude', 201)
+lon = sweep_xy.createDimension('longitude', 400) 
+time = sweep_xy.createDimension('time', None ) 
+
+# variable
+ls_mask_trmm = sweep_xy.createVariable('ls_mask_trmm','f4', ('latitude','longitude'))
+
+ls_mask_trmm[:,:] = trmm_lsmask
+
+
+# import netCDF4
+# rootgrp = netCDF4.Dataset('test.nc', 'w', format='NETCDF4')
+# sweep_xy = rootgrp.createGroup('sweep_xy')
+# dim_azimuth = sweep_xy.createDimension('azimuth', None)
+# dim_range = sweep_xy.createDimension('range', None)
+
+
+# azimuths_var = sweep_xy.createVariable('azimuths','i4',('azimuth',))
+# ranges_var = sweep_xy.createVariable('ranges','f4',('range',))
+# dBZ_var = sweep_xy.createVariable('dBZ','f4',('azimuth','range',))
+
+
+# azimuths_var[:] = np.arange(0,360)
+# ranges_var[:] = np.arange(0, 128000., 1000.)
+# dBZ_var[:] = data
+
 
 quit()
 
 
 
-# cdo mulc $dir_in/3B42_daily.1998.03.29.7.nc * in_path_lsmsk_TRMM/ 
+
