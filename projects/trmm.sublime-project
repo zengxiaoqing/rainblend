@@ -3,6 +3,9 @@
 	[
 		{
 			"path": "/usr/people/stepanov/python_scripts/TRMM"
+		},
+		{
+			"path": "/usr/people/stepanov/sh_scripts/TRMM"
 		}
 	]
 }
