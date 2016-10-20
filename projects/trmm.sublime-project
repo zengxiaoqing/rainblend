@@ -3,6 +3,9 @@
 	[
 		{
 			"path": "/usr/people/stepanov/python_scripts/TRMM"
+		},
+		{
+			"path": "/Users/istepanov/github/TRMM_blend"
 		}
 	]
 }

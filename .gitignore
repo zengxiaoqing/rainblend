@@ -1,3 +1,15 @@
 *.png
+*.dump
+*.sql
+
+.DS_Store
+
 
 /usr/people/stepanov/python_scripts/TRMM/plots
+/Users/istepanov/github/TRMM_blend/db_didah
+/Users/istepanov/github/TRMM_blend/employees_db
+/Users/istepanov/github/TRMM_blend/projects
+/Users/istepanov/github/TRMM_blend/ascii2nc
+/Users/istepanov/github/TRMM_blend/ascii_out
+
+
