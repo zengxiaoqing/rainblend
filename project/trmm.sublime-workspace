@@ -1,0 +1,995 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"BTD",
+				"BTD_4_11_CO_CD"
+			],
+			[
+				"BT",
+				"BT4_cld-BT11_cld"
+			],
+			[
+				"BTD_4",
+				"BTD_4_11_CO_CD"
+			],
+			[
+				"BTD_",
+				"BTD_4_11_CD"
+			],
+			[
+				"nc_",
+				"nc_CO"
+			],
+			[
+				"in",
+				"in_path_cloud"
+			],
+			[
+				"Reff_",
+				"Reff_av_hr23"
+			],
+			[
+				"LW",
+				"LWP_hr23"
+			],
+			[
+				"BT4",
+				"BT4_1d"
+			],
+			[
+				"Reff_1d",
+				"Reff_1d_cld"
+			],
+			[
+				"BT11_",
+				"BT11_1d"
+			],
+			[
+				"BT11_1d",
+				"BT11_1d_cld"
+			],
+			[
+				"BT4_1",
+				"BT4_1d_cld"
+			],
+			[
+				"BT4_",
+				"BT4_cld_driz"
+			],
+			[
+				"Ref",
+				"Reff_1d"
+			],
+			[
+				"BT11",
+				"BT11_1d"
+			],
+			[
+				"hour",
+				"hour"
+			],
+			[
+				"R",
+				"R_eff"
+			],
+			[
+				"nc",
+				"ncfile12"
+			],
+			[
+				"dim",
+				"dimNames"
+			],
+			[
+				"Re",
+				"Reff_prof_hr23"
+			],
+			[
+				"Reff",
+				"Reff_prof_hr23_wat"
+			],
+			[
+				"BT11_c",
+				"BT11_cld_driz"
+			],
+			[
+				"ch4",
+				"ch4_units"
+			],
+			[
+				"ch11_",
+				"ch11_pxl_cnt"
+			],
+			[
+				"path_live_cloud",
+				"path_live_cloud_and_drizzle"
+			],
+			[
+				"run",
+				"run_file"
+			],
+			[
+				"extr",
+				"extract_bulk_mp_props_sh"
+			],
+			[
+				"core_number_",
+				"core_number_new"
+			],
+			[
+				"core",
+				"core_number_old"
+			],
+			[
+				"les",
+				"les_import_hr020000"
+			],
+			[
+				"sce",
+				"scene_out"
+			],
+			[
+				"time",
+				"time_stamp2"
+			],
+			[
+				"F",
+				"_FillValue"
+			],
+			[
+				"0e",
+				"0e-3"
+			],
+			[
+				"reff",
+				"reff_qr"
+			],
+			[
+				"ref",
+				"reff_qr"
+			],
+			[
+				"the",
+				"then"
+			],
+			[
+				"BT_11_4",
+				"BTD_11_4um"
+			],
+			[
+				"color",
+				"colormap"
+			],
+			[
+				"OD",
+				"opt_depth"
+			],
+			[
+				"op",
+				"opt_depth"
+			],
+			[
+				"extrac",
+				"extracted_slices"
+			],
+			[
+				"old",
+				"old_reff"
+			],
+			[
+				"e",
+				"e"
+			],
+			[
+				"new",
+				"new_lwc"
+			],
+			[
+				"plot",
+				"plot_title"
+			],
+			[
+				"ix",
+				"ix1"
+			],
+			[
+				"nz",
+				"nz_ins"
+			],
+			[
+				"Figu",
+				"Figure_photon_count_accuracy_lw_rad"
+			],
+			[
+				"Pho",
+				"Photon_count"
+			],
+			[
+				"wor",
+				"work3_DSD"
+			],
+			[
+				"Q",
+				"Quantity_DSD"
+			],
+			[
+				"Qu",
+				"Quantity_grid"
+			],
+			[
+				"work",
+				"work2"
+			],
+			[
+				"DSD",
+				"DSD_array"
+			],
+			[
+				"Ns",
+				"NsizeId"
+			],
+			[
+				"ssa_",
+				"ssa_slice"
+			],
+			[
+				"BT_",
+				"BT_4um_box_1D"
+			],
+			[
+				"BT_4",
+				"BT_4um_box_3D"
+			],
+			[
+				"ncid",
+				"ncid8"
+			],
+			[
+				"BT_11um_",
+				"BT_11um_box_3D"
+			],
+			[
+				"BT_4um_",
+				"BT_4um_box_3D"
+			],
+			[
+				"C",
+				"CLOUD"
+			],
+			[
+				"CL",
+				"CLOUD"
+			],
+			[
+				"netcdf",
+				"netcdf"
+			],
+			[
+				"sa",
+				"satellite_clear_sky_MC_lw"
+			],
+			[
+				"net",
+				"NetCDF"
+			],
+			[
+				"path",
+				"path_clear_sky_rtm"
+			],
+			[
+				"lw",
+				"lw_output_1D_39_and_11um_as_LW_1_and_LW_61um"
+			],
+			[
+				"satellite",
+				"satellite_box_MC_plane_parallel"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/Users/istepanov/github/TRMM_blend/query_data_SACA_series_rr.py",
+			"settings":
+			{
+				"buffer_size": 2079,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 147.0,
+		"last_filter": "folder",
+		"selected_items":
+		[
+			[
+				"folder",
+				"Project: Add Folder"
+			],
+			[
+				"refres",
+				"Project: Refresh Folders"
+			],
+			[
+				"package",
+				"Package Control: List Packages"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"git: Diff Curr",
+				"Git: Diff Current File"
+			],
+			[
+				"git: d",
+				"Git: Diff Current File"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"git: pus",
+				"Git: Push"
+			],
+			[
+				"git: com",
+				"Git: Commit"
+			],
+			[
+				"git:",
+				"Git: Add Current File"
+			],
+			[
+				"git: di",
+				"Git: Diff Current File"
+			],
+			[
+				"gi",
+				"Git: Commit history"
+			],
+			[
+				"git",
+				"Git: Status"
+			],
+			[
+				"nistall",
+				"Package Control: Install Package"
+			],
+			[
+				"git stat",
+				"Git: Status"
+			],
+			[
+				"git: pu",
+				"Git: Push"
+			],
+			[
+				"git: ad",
+				"Git: Add Current File"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"repo",
+				"Package Control: Add Repository"
+			],
+			[
+				"ssf",
+				"Set Syntax: MinimalFortran"
+			],
+			[
+				"ssfo",
+				"Set Syntax: MinimalFortran"
+			],
+			[
+				"d",
+				"Set Syntax: Diff"
+			],
+			[
+				"ssfor",
+				"Set Syntax: MinimalFortran"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"Package Control: Install Package"
+			],
+			[
+				"reconfig",
+				"LaTeXTools: Reconfigure and migrate settings"
+			],
+			[
+				"Package Control: t",
+				"Package Control: List Packages"
+			]
+		],
+		"width": 521.0
+	},
+	"console":
+	{
+		"height": 299.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/istepanov/github/TRMM_blend"
+	],
+	"file_history":
+	[
+		"/Users/istepanov/github/TRMM_blend/query_data_SACA_series_rr.py",
+		"/Users/istepanov/gitlab/phdthesis/motivation.tex",
+		"/Users/istepanov/gitlab/phdthesis/summary.tex",
+		"/Users/istepanov/gitlab/phdthesis/1-introduction.tex",
+		"/Users/istepanov/gitlab/phdthesis/2-radiation.tex",
+		"/Users/istepanov/gitlab/phdthesis/samenvatting.tex",
+		"/Users/istepanov/gitlab/phdthesis/4-observations.tex",
+		"/Users/istepanov/gitlab/phdthesis/3-retrievals.tex",
+		"/Users/istepanov/gitlab/phdthesis/bibliography.tex",
+		"/Users/istepanov/gitlab/phdthesis/4-observations.fls",
+		"/Users/istepanov/gitlab/phdthesis/A-appendix.tex",
+		"/Users/istepanov/gitlab/phdthesis/5-conclusions.tex",
+		"/Users/istepanov/gitlab/phdthesis/acknowledgements.tex",
+		"/Users/istepanov/gitlab/phdthesis/appendix.tex",
+		"/Users/istepanov/gitlab/phdthesis/stellingen/Stellingen_IS.tex",
+		"/Users/istepanov/gitlab/phdthesis/stellingen/Stellingen.tex",
+		"/Users/istepanov/gitlab/phdthesis/cover.tex",
+		"/Users/istepanov/gitlab/phdthesis/titlepage.tex",
+		"/Users/istepanov/gitlab/phdthesis/dedication.tex",
+		"/Users/istepanov/gitlab/phdthesis/abouttheauthor.tex",
+		"/Users/istepanov/opt/MSG_navigation_v1.02.f90",
+		"/Users/istepanov/python_scipts/convert_lat_lon_2_pixels_gdal.py",
+		"/Users/istepanov/gitlab/phdpaper/template.tex",
+		"/Users/istepanov/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/istepanov/gitlab/phdthesis/abbreviations.tex",
+		"/Users/istepanov/gitlab/phdthesis/symbols.tex",
+		"/Volumes/igor's home/ncl_scripts/make_input_johan_fix.ncl",
+		"/Volumes/igor's home/python_scripts/3panel_BTD_cld_with_drizzle_vs_cld_only.py",
+		"/Volumes/igor's home/python_scripts/2panel_BTD_cld_with_drizzle_vs_cld_only.py",
+		"/Volumes/igor's home/v1.6/tools/product_tools/src/extract_quantity_hor.f90",
+		"/Users/istepanov/gitlab/phdthesis/6-appendix.tex",
+		"/Users/istepanov/gitlab/phdthesis/bib/thesis.bib",
+		"/Users/istepanov/Library/Application Support/Sublime Text 3/Packages/User/pdflatex.sublime-build",
+		"/Users/istepanov/Library/Application Support/Sublime Text 3/Packages/User/LaTeXTools.sublime-settings",
+		"/Users/istepanov/gitlab/phdthesis/igor_thesis.pdf",
+		"/Users/istepanov/gitlab/phdthesis/bib/work/thesis.bib",
+		"/Users/istepanov/Downloads/Thesis_template_PP/bib/work/CRLiterature.bib",
+		"/Users/istepanov/gitlab/phdthesis/work/19-01-09/1-introduction.tex",
+		"/Users/istepanov/gitlab/phdthesis/phd_thesis.sublime-project",
+		"/Users/istepanov/Library/Application Support/Sublime Text 3/Packages/Package Control/Package Control.sublime-settings",
+		"/Users/istepanov/gitlab/phdpaper/phd_paper.sublime-project",
+		"/Users/istepanov/gitlab/phdthesis/igor_thesis.tex",
+		"/Users/istepanov/java_scripts/Hello_World.java",
+		"/Users/istepanov/python_scipts/get-pip.py",
+		"/Users/istepanov/Confident/safari_zoom/zoom_safari_160.css",
+		"/Volumes/igor's home/python_scripts/enbedded_subplot_test3.py",
+		"/Volumes/igor's home/python_scripts/enbedded_subplot_test2.py",
+		"/Volumes/igor's home/python_scripts/3dplot.py",
+		"/Volumes/igor's home/python_scripts/3d_test.py",
+		"/Volumes/igor's home/python_scripts/BTD_3d_volume_plot.py",
+		"/Volumes/igor's home/sh_scripts/rsync_scene_fold.sh",
+		"/Volumes/igor's home/ncl_scripts/make_input_johan_fix_sh_wrap.sh",
+		"/Volumes/igor's home/sh_scripts/sed_NaN_2_Zero_dat_LES.sh",
+		"/Volumes/igor's home/v1.6/sessions/lw_rad_mc_2scatt_regs_astex_full_res_gamma_1p4_drizzle.020000/loop_cross_secs_extract_plot_lwc_rwc_water_drizzle.sh",
+		"/Volumes/igor's home/sh_scripts/loop_cross_secs_extract_plot_lwc_rwc_water_drizzle.sh",
+		"/Volumes/igor's home/matlab_scripts/Reff_slice_LES_cloud_drizzle_2_ranges.m",
+		"/Users/istepanov/github/DSD_addon_extract_quantity/src/extract_quantity.f90",
+		"/Volumes/igor's home/v1.6/sessions/rtm_sens_study_adiabatic/lw_rad_pp_ss_drizzle_boers_overlay_inverse_boers_bimodal/bimodal_boers_and_inverse_boers.xml",
+		"/Volumes/igor's home/sh_scripts/loop_cross_secs_extract_plot.sh",
+		"/Volumes/igor's home/v1.6/sessions/lw_rad_mc.20/loop_cross_secs_extract_plot.sh",
+		"/Volumes/igor's home/matlab_scripts/Heatmaps_panel_BT_4_11_um_lwp_OD_reff.m",
+		"/Volumes/igor's home/matlab_scripts/BT_4_11_um_heatmaps_and_lwp.m",
+		"/Volumes/igor's home/matlab_scripts/panel_plot_profiles_split_scatt_libs_lwc_LES.m",
+		"/Volumes/igor's home/matlab_scripts/panel_plot_profiles_split_scatt_libs_reff_LES.m",
+		"/Volumes/igor's home/matlab_scripts/panel_plot_split_scatt_libs_lwc_LES.m",
+		"/Volumes/igor's home/matlab_scripts/panel_plot_split_scatt_libs_reff_LES.m",
+		"/Volumes/igor's home/matlab_scripts/BTD_reff_tau_Lensky_fig2_remake_curve_fit_3_panels_SGolay.m",
+		"/Volumes/igor's home/matlab_scripts/panel_plot_split_scatt_libs_refF_lwc_LES.m",
+		"/Volumes/igor's home/v1.6/sessions/lw_rad_mc_3scatt_regs.02/lw_rad_mc_39_11_um.sh",
+		"/Volumes/igor's home/v1.6/sessions/rtm_sens_study_adiabatic/lw_rad_pp_ss_adiabatic_boers_4scatt_regs/adiabatic_boers_4scatt_regs.xml",
+		"/Volumes/igor's home/v1.6/sessions/rtm_sens_study_adiabatic/lw_rad_pp_ss_drizzle_boers_inverse/drizzle_boers_inverse.xml",
+		"/Volumes/igor's home/ecsim_scripts/synthetic_scene_adiabatic_lwc/used_scenes/swrad-50.0-160.0-11-1.0-1.5-1.5-0.3-0.084-1000.0-1-ls_hc.xml",
+		"/Volumes/igor's home/ecsim_scripts/synthetic_scene_adiabatic_lwc/used_scenes/swrad-50.0-160.0-11-1.0-1.5-1.5-0.3-0.084-1000.0-0-ls.xml",
+		"/Volumes/igor's home/v1.6/sessions/rtm_sens_study_adiabatic/lw_rad_pp_ss_adiabatic_boers/adiabatic_boers_test.xml",
+		"/Volumes/igor's home/v1.6/sessions/rtm_sens_study_adiabatic/lw_rad_pp_ss_adiabatic_boers_vu_match_tau_reff/adiabatic_boers_test_vu_match_tau_reff.xml",
+		"/Volumes/igor's home/ecsim_scripts/synthetic_scene_adiabatic_lwc/swrad-50.0-160.0-11-1.0-1.2-1.0-0.3-0.084-1000.0-1-ls.xml",
+		"/Volumes/igor's home/ecsim_scripts/synthetic_scene_adiabatic_lwc/swrad-50.0-160.0-11-1.0-1.5-1.5-0.3-0.084-1000.0-0-ls.xml",
+		"/Volumes/igor's home/v1.6/sessions/rtm_sens_study_adiabatic/lw_rad_pp_ss_adiabatic_boers/adiabatic_2_6um_base_100_150um_top_0p01_base_1p00_top_lwc.xml",
+		"/Volumes/igor's home/sh_scripts/sed_cloud_scenes.sh",
+		"/Volumes/igor's home/sh_scripts/plot_all_ecsim_loop.sh",
+		"/Volumes/igor's home/sh_scripts/end2end_rtm_mc.sh",
+		"/Volumes/igor's home/v1.6/sessions/rtm_sens_study_pp_scenes/lw_rad_pp_ss_15_20um_0p10_lwc/box_plane_parallel_15_20um_0p01_lwc.xml",
+		"/Volumes/igor's home/sh_scripts/run_extr_plot_pp_ss_scenes.sh",
+		"/Volumes/igor's home/sh_scripts/run_lw_rad_pp_ss_scenes.sh",
+		"/Volumes/igor's home/v1.6/sessions/lw_rad_pp_ss_5_15um_0p01_lwc/lw_rad_mc_39_11_um.sh",
+		"/Users/istepanov/gitlab/phdthesis/4-mac.tex",
+		"/Users/istepanov/gitlab/phdthesis/3-observations.tex",
+		"/Users/istepanov/gitlab/phdthesis/3-blocking.tex",
+		"/Users/istepanov/PhD/Thesis_2015/igor_thesis.tex",
+		"/Volumes/igor/v1.6/tools/product_tools/src/extract_quantity.f90",
+		"/Users/istepanov/github/DSD_addon_extract_quantity/GPLv3",
+		"/Volumes/igor/v1.6/tools/product_tools/src/extract_quantity_bak.f90",
+		"/Volumes/igor/v1.6/sessions/lw_rad_mc.02_extract_quantity_DSD/plot_all_ecsim.sh",
+		"/Volumes/igor/v1.6/sessions/plot_all_development/plot_all_ecsim.sh",
+		"/Volumes/igor/matlab_scripts/ssa_somparison_with_varying_photon_count.m",
+		"/Users/istepanov/PhD/Thesis_2015/1-introduction.tex",
+		"/Volumes/igor/matlab_scripts/ssa_dependance_on_reff_plot.m",
+		"/Volumes/igor/matlab_scripts/BTD_reff_tau_Lensky_fig2_remake_curve_fit_3_panels_SGolay.m",
+		"/Volumes/igor/matlab_scripts/BT_4_11_um_heatmaps_and_lwp.m",
+		"/Volumes/igor/v1.6/sessions/lw_rad_mc.28/plot_all_ecsim_loop.sh",
+		"/Users/istepanov/Downloads/Thesis_template_PP/pawelczak_thesis.tex",
+		"/Users/istepanov/PhD/Thesis_2015/symbols.tex",
+		"/Users/istepanov/PhD/Thesis_2015/abbreviations.tex",
+		"/Users/istepanov/PhD/Thesis_2015/bib/thesis.bib",
+		"/Users/istepanov/PhD/Thesis_2015/2-radiation.tex",
+		"/Volumes/igor/v1.6/sessions/box_plane_parallel_ssa_sensitivity_10um_experiment/box_plane_parallel_10um.xml",
+		"/Users/istepanov/Downloads/Thesis_template_PP/1-introduction.tex",
+		"/Users/istepanov/PhD/Thesis_2015/titlepage.tex",
+		"/Users/istepanov/PhD/Thesis_2015/bibliography.tex",
+		"/Users/istepanov/Dropbox/PhD/conferences/conferences_2014/AMS_radiation_Boston/ext_abstract/The_satellite_observation_of_drizzle_in_Sc_ext_abstract_AMS_2014_radiation.tex",
+		"/Users/istepanov/PhD/Thesis_2015/publications.tex",
+		"/Volumes/igor/v1.6/sessions/lw_rad_mc.26/plot_all_ecsim_testing_with_ranges_no_loops.sh",
+		"/Volumes/igor/v1.6/sessions/box_plane_parallel_ssa_sensitivity_100um/box_plane_parallel_100um.xml",
+		"/Volumes/igor/v1.6/sessions/box_plane_parallel_ssa_sensitivity_50um/box_plane_parallel_50um.xml",
+		"/Volumes/igor/v1.6/sessions/lw_rad_mc.24/plot_all_ecsim_loop_X_and_Y_cross_sections.sh",
+		"/Volumes/igor/v1.6/sessions/lw_rad_mc.24/plot_all_ecsim_testing_with_ranges_no_loops.sh",
+		"/Volumes/igor/v1.6/sessions/lw_rad_mc.24/plot_all_ecsim_double_loop_XY_cross_sections.sh",
+		"/Volumes/igor/v1.6/sessions/lw_rad_mc.24/plot_all_ecsim_loop.sh",
+		"/Users/istepanov/Downloads/temp.sh",
+		"/Volumes/igor/v1.6/tools/product_tools/src/extract_quantity_hor.f90",
+		"/Volumes/igor/v1.6/models/scene_creator/src/scene_creator_xml.f90",
+		"/Volumes/igor/v1.6/sessions/box_plane_parallel_testing/plot_all_ecsim.sh",
+		"/Users/istepanov/Downloads/uff-2013_05_27/readuff.m",
+		"/Users/istepanov/PhD/Thesis_2015/2-sensing.tex",
+		"/Users/istepanov/PhD/Writing/Thesis/Chapter_Introduction/mybib.bib",
+		"/Users/istepanov/PhD/Thesis_2015/pawelczak_thesis.tex",
+		"/Volumes/igor/matlab_scripts/BT_4um_SGola_1D_vs3D_box_clouds.m",
+		"/Volumes/igor/matlab_scripts/BT_4um_SGola_1D_vs3D_box_clouds.sh"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"a4",
+			"radar",
+			"Ranging",
+			"lidar",
+			"peru",
+			"california",
+			"plane paralle",
+			"rogers",
+			"\\perc",
+			"\\prec",
+			"perc",
+			"liquid water path",
+			"lwp",
+			"jonas",
+			"this indicate",
+			"and and",
+			"the the",
+			"IR",
+			"in terms",
+			"satellite",
+			"albedo",
+			"bib",
+			"table",
+			"savitzk",
+			"500px",
+			"0.6",
+			"impediment",
+			"Photon count limitation of the Radiative Transfer Model",
+			"brf",
+			"reflectance",
+			"wacr",
+			"11",
+			"ipcc",
+			"part of the e",
+			"the distinc",
+			"stelling",
+			"propositions",
+			"proefschrift",
+			"LES",
+			"citation",
+			"citation needed",
+			"wallace",
+			"pocket",
+			"multi",
+			"arm",
+			"eumetsat",
+			"footnote",
+			"begin",
+			"low ",
+			"chap",
+			"threshold",
+			"drizzle mode",
+			"vspace",
+			"clearpage",
+			"belgrade",
+			"vspace",
+			"twente",
+			"wavelength",
+			"explorer",
+			"itemize",
+			"astex",
+			"itemize",
+			"momentarily",
+			"magnificus",
+			"rave",
+			"{",
+			"\\mu",
+			"/mu",
+			"page 28",
+			"the location",
+			"chapter",
+			"bt",
+			"ht]",
+			"table",
+			"ams",
+			"cmod",
+			"pixel cou",
+			"planck",
+			"plank",
+			"frac",
+			"day",
+			"wood",
+			"represe",
+			"linewid",
+			"dbz",
+			"dBZ",
+			"chap",
+			"aminou",
+			"var",
+			"mbl",
+			"target",
+			"subsec",
+			"are already developed",
+			"capture",
+			"sensitive",
+			"chap",
+			"albrecht1989aerosols",
+			"albrecht",
+			"platnick",
+			"rossow",
+			"arking",
+			"active",
+			"draw",
+			"satellite retr",
+			"eff",
+			"wu1987",
+			"lambd",
+			"albedo",
+			"cd",
+			"brdf",
+			"vrdf",
+			"brdf",
+			"mbl",
+			"solar",
+			"sza",
+			"reff",
+			"lwc",
+			"unit",
+			"lwc",
+			"chap",
+			"threshold",
+			"rosenfeld1998satellite",
+			"rosenfeld",
+			"BTD",
+			"taken",
+			"product",
+			"above",
+			"mask"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/Users/istepanov/github/TRMM_blend/query_data_SACA_series_rr.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2079,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								601,
+								601
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": -1,
+								"modified": true,
+								"selection": true,
+								"status": -1,
+								"syntax": "python"
+							},
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
+							],
+							"bs_sintax": "python",
+							"buffer_scroll_name": "7c6ebb0a",
+							"spell_check": false,
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 201.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 126.0
+	},
+	"output.latextools":
+	{
+		"height": 228.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 197.0
+	},
+	"pinned_build_system": "Packages/LaTeXTools/LaTeX.sublime-build",
+	"project": "trmm.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"1-introduction.tex"
+			],
+			[
+				"th",
+				"igor_thesis.tex"
+			],
+			[
+				"radi",
+				"2-radiation.tex"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/gitlab/phdpaper/phd_paper.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 219.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

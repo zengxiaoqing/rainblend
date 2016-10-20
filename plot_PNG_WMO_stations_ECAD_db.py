@@ -585,17 +585,6 @@ plt.text(xpt+10000,ypt+10000,'Wewak W.O.')
 # -----------------------------------------------------
 
 
-
-
-# Updated LS Mask by NASA
-
-#cs = m.pcolor(x_mask,y_mask,trmm_lsmask)
-#cs= m.pcolormesh(x_mask,y_mask,trmm_lsmask)
-#cs =m.contourf(x_mask,y_mask,trmm_lsmask,clevs_wat_perc) 
-
-# Add colorbar 
-#cbar =m.colorbar(cs) # 
-
 # Add title 
 #plt.title('TRMM (NASA) percentage of water [Land Sea Mask]', size=26) 
 
