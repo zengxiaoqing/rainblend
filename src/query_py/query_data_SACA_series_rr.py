@@ -77,7 +77,10 @@ print 'new date should be in format 2008-11-22: ', datetest
 # year_list=['1981%', '1982%', '1983%', '1984%', '1985%', '1986%', '1987%', '1988%', '1989%', '1990%']
 # year_list=['1991%', '1992%', '1993%', '1994%', '1995%', '1996%', '1997%', '1998%', '1999%', '2000%']
 # year_list=['2001%', '2002%', '2003%', '2004%', '2005%', '2006%', '2007%', '2008%', '2009%', '2010%']
-year_list=['2011%', '2012%', '2013%', '2014%', '2015%', '2016%']
+# year_list=['2011%', '2012%', '2013%', '2014%', '2015%', '2016%']
+
+# Individual year:
+year_list=['2000%']
 
 
 # Loop for every year in database
@@ -86,9 +89,11 @@ year_list=['2011%', '2012%', '2013%', '2014%', '2015%', '2016%']
 # for year in year_list:
 for year in year_list:
 
-  f3=open('/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_year'
-          +(str(year)[0:4])+'.dat', 'w+')
+  # f3=open('/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_year'
+  #         +(str(year)[0:4])+'.dat', 'w+')
 
+  f3=open('/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year'
+          +(str(year)[0:4])+'.dat', 'w+')
 
 
   # Bash queries
@@ -106,17 +111,47 @@ for year in year_list:
   #          "AND series_rr.ser_id=series.ser_id "
   #          "AND series.sta_id=stations.sta_id")
   #          # "WHERE ser_date LIKE '%1996%'")
+  
+  # # series_rr
+  # # rr with lat and lon and date
+  # query = ("SELECT rr, ser_date, lat, lon  FROM series_rr,series,stations "
+  #          # "WHERE ser_date LIKE '1947%' AND "
+  #          # "WHERE ser_date LIKE '%%%s%%' AND "
+  #          # "WHERE ser_date LIKE %s AND "
+  #          "WHERE ser_date LIKE %s "
+  #          "AND lat BETWEEN %s AND %s "
+  #          "AND lon BETWEEN %s AND %s "
+  #          "AND series_rr.ser_id=series.ser_id "
+  #          "AND series.sta_id=stations.sta_id")
 
+
+  # series_rr_blended_mixed
   # rr with lat and lon and date
-  query = ("SELECT rr, ser_date, lat, lon  FROM series_rr,series,stations "
-           # "WHERE ser_date LIKE '1947%' AND "
-           # "WHERE ser_date LIKE '%%%s%%' AND "
-           # "WHERE ser_date LIKE %s AND "
-           "WHERE ser_date LIKE %s "
-           "AND lat BETWEEN %s AND %s "
-           "AND lon BETWEEN %s AND %s "
-           "AND series_rr.ser_id=series.ser_id "
-           "AND series.sta_id=stations.sta_id")
+  query = ("SELECT series_rr_blended_mixed.rr AS rr, "
+                  "series_rr_blended_mixed.ser_date AS ser_date, "
+                  "stations.lat AS lat, "
+                  "stations.lon AS lon, "
+                  "stations.elev AS elev, "
+                  "stations.wmocode AS wmocode, "
+                  "stations.coun_id AS coun_id "
+           "FROM series_rr_blended_mixed, stations "
+                  "WHERE series_rr_blended_mixed.ser_date LIKE %s "
+                  "AND series_rr_blended_mixed.sta_id=stations.sta_id "
+                  "AND stations.lat BETWEEN %s AND %s "
+                  "AND stations.lon BETWEEN %s AND %s")
+
+  # # Richard extracting metadata from "series_blended_mixed_derived"
+  # "SELECT series_blended_mixed_derived.sta_id AS id, "
+  #         stations.name AS station, 
+  #         country.name AS country, 
+  #         stations.lat/3600 AS lat,
+  #         stations.lon/3600 AS lon, 
+  #         elev/10.0 AS elev 
+  #           FROM series_blended_mixed_derived,stations,country  
+  #             WHERE series_blended_mixed_derived.syn_kind='tx' AND
+  #             series_blended_mixed_derived.sta_id=stations.sta_id AND
+  #             stations.coun_id=country.coun_id""
+
 
 
   # Database lat/lon units from db are in seconds. Divide by 3600. to convert decimal degrees.
@@ -149,7 +184,7 @@ for year in year_list:
 
 
   # Loop over precip amount, latitude & longitude and series date
-  for (rr, ser_date, lat, lon) in cursor:
+  for (rr, ser_date, lat, lon, elev, wmocode, coun_id) in cursor:
     
     lat=lat/3600.          # Convert to decimals
     lon=lon/3600.
@@ -157,8 +192,11 @@ for year in year_list:
     if rr != -9999:
       rr=rr/10.            # To be confirmed!
 
-    print("{}, {}, {}, {}".format(
-      ("%8.2f" % rr), ser_date, ("%8.3f" % lat), ("%8.3f" % lon)))
+    elev=elev/10.0  
+
+    print("{}, {}, {}, {}, {}, {}, {}".format(
+      ("%8.2f" % rr), ("%12s" % ser_date), ("%8.3f" % lat), ("%8.3f" % lon), 
+      ("%8.3f" % elev), ("%8s" % wmocode), ("%4s" % coun_id)))
 
 
     # Print names of stations
@@ -167,7 +205,12 @@ for year in year_list:
   
     # WRITE to FILE
     # f3.write("{}, {}, {}, {}\n".format(rr, ser_date, lat/3600., lon/3600.))
-    f3.write("{}, {}, {}, {}\n".format(("%8.2f" % rr), ser_date, ("%8.3f" % lat), ("%8.3f" % lon)))
+    # f3.write("{}, {}, {}, {}\n".format(("%8.2f" % rr), ser_date, ("%8.3f" % lat), ("%8.3f" % lon)))
+    f3.write("{}, {}, {}, {}, {}, {}, {}\n".format(
+      ("%8.2f" % rr), ("%12s" % ser_date), 
+      ("%8.3f" % lat), ("%8.3f" % lon), 
+      ("%8.3f" % elev), ("%8s" % wmocode), 
+      ("%4s" % coun_id)))
   #==============================================================================
 
 
