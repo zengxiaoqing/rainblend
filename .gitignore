@@ -1,6 +1,7 @@
 *.png
 *.dump
 *.sql
+*.swp
 
 .DS_Store
 
@@ -13,5 +14,6 @@ project
 ascii2nc
 ascii_out
 TRMM_nc
+src/stations/plots
 
 

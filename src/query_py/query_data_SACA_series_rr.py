@@ -80,7 +80,10 @@ print 'new date should be in format 2008-11-22: ', datetest
 # year_list=['2011%', '2012%', '2013%', '2014%', '2015%', '2016%']
 
 # Individual year:
-year_list=['2000%']
+# year_list=['2000%']
+
+# Single day
+year_list=['2000-06-10']
 
 
 # Loop for every year in database
@@ -92,8 +95,11 @@ for year in year_list:
   # f3=open('/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_year'
   #         +(str(year)[0:4])+'.dat', 'w+')
 
+  # f3=open('/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year'
+  #         +(str(year)[0:4])+'.dat', 'w+')
+
   f3=open('/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year'
-          +(str(year)[0:4])+'.dat', 'w+')
+          +(str(year))+'.dat', 'w+')
 
 
   # Bash queries
@@ -194,9 +200,9 @@ for year in year_list:
 
     elev=elev/10.0  
 
-    print("{}, {}, {}, {}, {}, {}, {}".format(
+    print("{}, {}, {}, {}, {}, {}".format(
       ("%8.2f" % rr), ("%12s" % ser_date), ("%8.3f" % lat), ("%8.3f" % lon), 
-      ("%8.3f" % elev), ("%8s" % wmocode), ("%4s" % coun_id)))
+      ("%8.3f" % elev), ("%4s" % coun_id)))
 
 
     # Print names of stations
@@ -206,11 +212,10 @@ for year in year_list:
     # WRITE to FILE
     # f3.write("{}, {}, {}, {}\n".format(rr, ser_date, lat/3600., lon/3600.))
     # f3.write("{}, {}, {}, {}\n".format(("%8.2f" % rr), ser_date, ("%8.3f" % lat), ("%8.3f" % lon)))
-    f3.write("{}, {}, {}, {}, {}, {}, {}\n".format(
+    f3.write("{}, {}, {}, {}, {}\n".format(
       ("%8.2f" % rr), ("%12s" % ser_date), 
       ("%8.3f" % lat), ("%8.3f" % lon), 
-      ("%8.3f" % elev), ("%8s" % wmocode), 
-      ("%4s" % coun_id)))
+      ("%8.3f" % elev)))
   #==============================================================================
 
 
