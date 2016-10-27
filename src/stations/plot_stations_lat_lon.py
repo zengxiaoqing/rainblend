@@ -15,7 +15,7 @@ from mpl_toolkits.basemap import Basemap
 
 
 # gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_year2015.dat")
-gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                         delimiter=',', 
                         dtype=[('lat', np.float32), ('lon', np.float32)], 
                         usecols=(2, 3))
@@ -36,7 +36,7 @@ themap = Basemap(projection='gall',
               urcrnrlon = 179.875,               # upper-right corner longitude
               urcrnrlat = 25.125,               # upper-right corner latitude
               resolution = 'f',
-              area_thresh = 1.0,
+              area_thresh = 0.1,
               )
 
 # area_thresh:	coastline or lake with an area smaller than area_thresh in 
@@ -62,7 +62,7 @@ themap.plot(x, y,
 # Save plot
 
 
-plt.savefig('plots/Stations_location_20110610.png',optimize=True,quality=85,dpi=300)
+plt.savefig('plots/Stations_location_20110610.png',bbox_inches='tight',optimize=True,quality=85,dpi=300)
 
 
 plt.close(fig)
