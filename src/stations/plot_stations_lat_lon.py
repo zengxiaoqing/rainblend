@@ -62,7 +62,11 @@ themap.plot(x, y,
 # Save plot
 
 
+<<<<<<< HEAD
 plt.savefig('plots/Stations_location_20110610.png',bbox_inches='tight',optimize=True,quality=85,dpi=300)
+=======
+plt.savefig('plots/Stations_location_20110610.png', bbox_inches='tight', optimize=True,quality=85,dpi=300)
+>>>>>>> e16f798e8f87181cde8998e286313cbcb24aa216
 
 
 plt.close(fig)
