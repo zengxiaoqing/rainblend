@@ -9,22 +9,63 @@ import string
 import matplotlib
 import matplotlib.cm as cm
 import scipy.interpolate
-# np.set_printoptions(threshold='nan')  # print full array
+np.set_printoptions(threshold='nan')  # print full array
 from matplotlib.mlab import griddata
- 
+from netCDF4 import Dataset
 
-gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+# Define some paths - TRMM related
+# ==========================================================================================
+# in_path="/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"
+in_path="/Users/istepanov/github/TRMM_blend/TRMM_nc/"
+# ==========================================================================================
+
+# TRMM file for SACA area, Land only
+file_trmm='3b42-daily.2000-georef-saca-land-only.nc' 
+# 3b42-daily.2000-georef-saca-land-only.nc
+
+# file_pr = [in_path+file_trmm]  
+
+
+# # Review imported file paths in log
+# print "Location of TRMM precipitation file is: ",file_pr
+# print
+
+# Define paths to NC files
+#===========================================================================================
+
+# Precip and elevation (Land Sea Mask)
+nc_trmm = Dataset(in_path+file_trmm,'r')   # [latitude, longitude][201x400]
+
+# Extract the actual variable
+# For TRMM data go from 1-365 in ncview, but python counts 0-364
+trmm_precip = nc_trmm.variables['r'][161,:,:]   # [time, lat, lon], 0= 01.01.2013 (python)
+
+print 'trmm data is: ', trmm_precip
+
+# Coordinates for TRMM
+lons = nc_trmm.variables['longitude']
+lats = nc_trmm.variables['latitude']
+
+# Import data from ASCII CSV file 
+#
+gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+# gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                         delimiter=',', 
                         dtype=[('lat', np.float32), ('lon', np.float32), ('rr', np.float32)], 
                         usecols=(2, 3, 0))
+
 
 # Make lat & lon easier to use down the line:
 lat = gauges['lat']
 lon = gauges['lon']
 rr = gauges['rr']
 
-# Imported data from ASCII files
+# Filter out stations without measurements (-999.9)
+# rr[rr == -9.99900000e+3] = np.nan
+rr[rr == -9.99900000e+3] = 0.0
 
+
+# Imported data from ASCII files
 # print 'lon is: ', gauges['lon']
 # print
 # print 'lat is: ', gauges['lat']
@@ -38,76 +79,77 @@ print 'lat shape is: ', lat.shape
 print
 print 'rr shape is: ', rr.shape
 
+
+# print 'rr is:', rr
+
 # quit()
 
 
-# New interpolation:
-numcols, numrows = 30, 30
-xi = np.linspace(lon.min(), lon.max(), numcols)
-yi = np.linspace(lat.min(), lat.max(), numrows)
+# -- New interpolation (gridding):
+numcols, numrows = 110, 110
+# xi = np.linspace(lon.min(), lon.max(), numcols)
+# yi = np.linspace(lat.min(), lat.max(), numrows)
+
+# Now create grid matching SACA
+# xi = np.linspace(90, 190, numcols)
+# yi = np.linspace(-24.875, 24.875, numrows)
+
+xi = lons
+yi = lats
+
 xi, yi = np.meshgrid(xi, yi)
 
-# print 'xi is: ', xi
 
 # quit()
 
 x, y, z = lon, lat, rr
-# zi = griddata(x, y, rr, xi, yi,s interp='linear')
-zi = griddata(x, y, rr, xi, yi)
+# zi = griddata(x, y, rr, xi, yi)  # works IS
 
-#-- Display the results
+
+# use RBF
+# rbf = scipy.interpolate.Rbf(x, y, z, epsilon=2)
+# rbf = scipy.interpolate.Rbf(x, y, z, function='thin-plate')
+rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
+ZI = rbf(xi, yi)
+
+# plot the result
+# n = plt.normalize(-2., 2.)
+# plt.subplot(1, 1, 1)
+# plt.pcolor(xi, yi, ZI, cmap=cm.jet)
+
 fig, ax = plt.subplots()
-im = ax.contourf(xi, yi, zi)
-ax.scatter(lon, lat, c=rr, s=100,
-           vmin=zi.min(), vmax=zi.max())
+im = ax.contourf(xi, yi, ZI)
+plt.scatter(x, y, 50, z, cmap=cm.jet)
+
+# Range of axis 
+plt.xlim([90,190])
+plt.ylim([-25,25])
+
+# # -- Display the results
+# fig, ax = plt.subplots()
+# im = ax.contourf(xi, yi, zi)
+# ax.scatter(lon, lat, c=rr, s=100, vmin=0.0, vmax=10.0)
+
+# # -- Colorbar
 fig.colorbar(im)
 
-plt.show()
+# # cbar=fig.colorbar(im, ticks=[0.0,5.0,10.0])
+# # cbar.set_clim(0.0, 10.0)
+# # plt.clim(0,10)
+
+
+# plt.show()
+
+# Save as PNG
+plt.savefig('plots/Precip_TPspline_20000610.png', 
+            bbox_inches='tight', 
+            optimize=True,
+            quality=85,
+            dpi=300)
+
+plt.close(fig)
 
 quit()
-
-#-- Now let's grid your data.
-# First we'll make a regular grid to interpolate onto. This is equivalent to
-# your call to `mgrid`, but it's broken down a bit to make it easier to
-# understand. The "30j" in mgrid refers to 30 rows or columns.
-numcols, numrows = 30, 30
-xi = np.linspace(data.Lon.min(), data.Lon.max(), numcols)
-yi = np.linspace(data.Lat.min(), data.Lat.max(), numrows)
-xi, yi = np.meshgrid(xi, yi)
-
-#-- Interpolate at the points in xi, yi
-# "griddata" expects "raw" numpy arrays, so we'll pass in
-# data.x.values instead of just the pandas series data.x
-x, y, z = data.Lon.values, data.Lat.values, data.Z.values
-zi = griddata(x, y, z, xi, yi)
-
-#-- Display the results
-fig, ax = plt.subplots()
-im = ax.contourf(xi, yi, zi)
-ax.scatter(data.Lon, data.Lat, c=data.Z, s=100,
-           vmin=zi.min(), vmax=zi.max())
-fig.colorbar(im)
-
-plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
