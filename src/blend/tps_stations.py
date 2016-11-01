@@ -1,5 +1,25 @@
+# Make python script executable
+#!/usr/bin/python
 
-# Imported scatter code, version 2.0
+
+# Thin Based Spline applied to station SACA data
+
+# Radial Base Function core:
+
+# interp = scipy.interpolate.Rbf(x, y, z, function='thin_plate')
+# yi, xi = np.mgrid[0:1:100j, 0:1:100j]
+# zi = interp(xi, yi)
+
+
+# ==========================================
+# Author: I.Stepanov (igor.stepanov@knmi.nl)
+# 28.10.2016 @KNMI
+# ============================================================================================
+# Updates list
+# 
+# ============================================================================================
+
+
 # ================================================================
 
 from mpl_toolkits.basemap import Basemap
@@ -9,47 +29,45 @@ import string
 import matplotlib
 import matplotlib.cm as cm
 import scipy.interpolate
-np.set_printoptions(threshold='nan')  # print full array
+# np.set_printoptions(threshold='nan')  # print full array
 from matplotlib.mlab import griddata
 from netCDF4 import Dataset
+from matplotlib.colors import Normalize
 
-# Define some paths - TRMM related
+
+# TRMM bound
 # ==========================================================================================
-# in_path="/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"
-in_path="/Users/istepanov/github/TRMM_blend/TRMM_nc/"
+in_path="/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"   # work station
+# in_path="/Users/istepanov/github/TRMM_blend/TRMM_nc/"                           # rMBP
 # ==========================================================================================
 
-# TRMM file for SACA area, Land only
-file_trmm='3b42-daily.2000-georef-saca-land-only.nc' 
-# 3b42-daily.2000-georef-saca-land-only.nc
-
-# file_pr = [in_path+file_trmm]  
-
-
-# # Review imported file paths in log
-# print "Location of TRMM precipitation file is: ",file_pr
-# print
 
 # Define paths to NC files
 #===========================================================================================
+# TRMM file for SACA area, Land only
+file_trmm='3B42_daily.2000_georef_SACA_land_only.nc'  # work station
+# 3b42-daily.2000-georef-saca-land-only.nc            # rMBP
 
-# Precip and elevation (Land Sea Mask)
-nc_trmm = Dataset(in_path+file_trmm,'r')   # [latitude, longitude][201x400]
 
-# Extract the actual variable
-# For TRMM data go from 1-365 in ncview, but python counts 0-364
+# Precip and elevation
+nc_trmm = Dataset(in_path+file_trmm,'r')   
+
+# Extract the precip var
 trmm_precip = nc_trmm.variables['r'][161,:,:]   # [time, lat, lon], 0= 01.01.2013 (python)
 
-print 'trmm data is: ', trmm_precip
 
-# Coordinates for TRMM
-lons = nc_trmm.variables['longitude']
+# Coordinates for TRMM: [latitude, longitude][201x400]
+lons = nc_trmm.variables['longitude'] 
 lats = nc_trmm.variables['latitude']
+# ==========================================================================================
+
+
 
 # Import data from ASCII CSV file 
+# ==========================================================================================
 #
-gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
-# gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+#gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                         delimiter=',', 
                         dtype=[('lat', np.float32), ('lon', np.float32), ('rr', np.float32)], 
                         usecols=(2, 3, 0))
@@ -58,158 +76,26 @@ gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_statio
 # Make lat & lon easier to use down the line:
 lat = gauges['lat']
 lon = gauges['lon']
-rr = gauges['rr']
+rr  = gauges['rr']
+
+norm = Normalize()
+
 
 # Filter out stations without measurements (-999.9)
 # rr[rr == -9.99900000e+3] = np.nan
 rr[rr == -9.99900000e+3] = 0.0
+# ==========================================================================================
 
 
-# Imported data from ASCII files
-# print 'lon is: ', gauges['lon']
-# print
-# print 'lat is: ', gauges['lat']
-# print
-# print 'rr is: ', gauges['rr']
-
-
-print 'lon shape is: ', lon.shape
-print
-print 'lat shape is: ', lat.shape
-print
-print 'rr shape is: ', rr.shape
-
-
-# print 'rr is:', rr
-
-# quit()
-
-
-# -- New interpolation (gridding):
-numcols, numrows = 110, 110
-# xi = np.linspace(lon.min(), lon.max(), numcols)
-# yi = np.linspace(lat.min(), lat.max(), numrows)
-
-# Now create grid matching SACA
-# xi = np.linspace(90, 190, numcols)
-# yi = np.linspace(-24.875, 24.875, numrows)
-
-xi = lons
-yi = lats
-
-xi, yi = np.meshgrid(xi, yi)
-
-
-# quit()
-
-x, y, z = lon, lat, rr
-# zi = griddata(x, y, rr, xi, yi)  # works IS
-
-
-# use RBF
-# rbf = scipy.interpolate.Rbf(x, y, z, epsilon=2)
-# rbf = scipy.interpolate.Rbf(x, y, z, function='thin-plate')
-rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
-ZI = rbf(xi, yi)
-
-# plot the result
-# n = plt.normalize(-2., 2.)
-# plt.subplot(1, 1, 1)
-# plt.pcolor(xi, yi, ZI, cmap=cm.jet)
-
-fig, ax = plt.subplots()
-im = ax.contourf(xi, yi, ZI)
-plt.scatter(x, y, 50, z, cmap=cm.jet)
-
-# Range of axis 
-plt.xlim([90,190])
-plt.ylim([-25,25])
-
-# # -- Display the results
-# fig, ax = plt.subplots()
-# im = ax.contourf(xi, yi, zi)
-# ax.scatter(lon, lat, c=rr, s=100, vmin=0.0, vmax=10.0)
-
-# # -- Colorbar
-fig.colorbar(im)
-
-# # cbar=fig.colorbar(im, ticks=[0.0,5.0,10.0])
-# # cbar.set_clim(0.0, 10.0)
-# # plt.clim(0,10)
-
-
-# plt.show()
-
-# Save as PNG
-plt.savefig('plots/Precip_TPspline_20000610.png', 
-            bbox_inches='tight', 
-            optimize=True,
-            quality=85,
-            dpi=300)
-
-plt.close(fig)
-
-quit()
-
-
-
-# Thin plate spline part:
-interp = scipy.interpolate.Rbf(gauges['lon'], gauges['lat'], gauges['rr'], function='linear')
-
-lati,loni=np.mgrid[0:1:100j, 0:1:100j]
-# lati,loni=np.mgrid[gauges['lon'], gauges['lat']]
-
-# numcols, numrows = 400, 201 
-numcols, numrows = 3838, 3838
-# loni = np.linspace(gauges['lon'].min(), gauges['lon'].max(), numcols)
-# lati = np.linspace(gauges['lat'].min(), gauges['lat'].max(), numrows)
-xi, yi = np.meshgrid(lati, loni)
-
-# print 'xi is:', xi
-# print
-# print 'yi is:', yi
-
-print 'xi dimension is:', xi.shape
-print
-print 'yi dimension is:', yi.shape
-
-print
-
-# print 'minimum lon', gauges['lon'].min()
-# print 'maximum lon', gauges['lon'].max()
-# print
-# print 'minimum lat', gauges['lat'].min()
-# print 'maximum lat', gauges['lat'].max()
-# print
-
-# minimum lon 95.283
-# maximum lon 177.45
-
-# minimum lat -20.0
-# maximum lat 22.35
-
-
-# quit()
-
-# x, y, z = data.Lon, data.Lat, data.Z
-
-rri=interp(loni, lati)
-
-
-# interp = scipy.interpolate.Rbf(x, y, z, function='thin_plate')
-# yi, xi = np.mgrid[0:1:100j, 0:1:100j]
-# zi = interp(xi, yi)
-
-# quit()
 
 # Design figure
 # ================================================================
 xsize=20
 ysize=10
 
-fig = plt.figure(figsize=(xsize,ysize))
+# fig = plt.figure(figsize=(xsize,ysize))
+fig, ax = plt.subplots(figsize=(xsize,ysize),dpi=100)
 # ================================================================
-
 
 m = Basemap(projection='gall',
             llcrnrlon = 80.125,              # lower-left corner longitude
@@ -221,65 +107,143 @@ m = Basemap(projection='gall',
             )
 
 
-# x1,y1=m(gauges['lon'],gauges['lat'])
+# # Create regular grid from TRMM lon/lat
+xi, yi = np.meshgrid(lons, lats)
+xnew, ynew = m(xi,yi)
 
-x1,y1=m(loni, lati)
+# Alternative grid
+lonst, latst = np.meshgrid(lons, lats)
+x_trmm, y_trmm = m(lonst, latst)
 
-m.drawcoastlines()
+# # Dealing witg NaNs
+# vals = ~np.isnan(rr)
+
+# # Interpolation
+# # =============================================================================
+# # Radial Basis Function
+# rbf = scipy.interpolate.Rbf(lon, lat, rr, function='thin_plate', smooth=5)
+# rri = rbf(xi, yi)
+
+
+m.drawcoastlines(zorder=3)
 m.drawcountries()
-m.fillcontinents(color='gainsboro', zorder=0)
+m.fillcontinents(color='gainsboro', zorder=1)
 m.drawmapboundary(fill_color='steelblue')
 
 
+# # Actual plotting
+# im = ax.pcolor(xi, yi, rri, zorder=1)
+# # im = ax.pcolor(xi, yi, trmm_precip, zorder=1)  # ok
+# # im = ax.contourf(xnew, ynew, trmm_precip, zorder=1)
+# plt.scatter(lon, lat, 50, rr, cmap=cm.cool, zorder=2)  # works
 
-# #Finally, the scatter plot.
-# ax = plt.gca()
-# rr_scat_plot=m.scatter(x1,y1,s=500,c=gauges['rr'],marker="o",cmap=cm.cool,alpha=0.7)
-# # plt.title("Flickr Geotagging Counts with Basemap")
-# # plt.show()
-# plt.clim(0.0,10.0)
-# # plt.clim(-999,-999)
-# # plt.clim(-1,1)
+# im.set_clim(0.0,150.0)  # affects colorbar range too
 
-# Interpolated plot:
-ax = plt.gca()
-rr_scat_plot=m.scatter(loni,lati,s=500,c=rri,marker="o",cmap=cm.cool,alpha=0.7)
-# im = ax.imshow(zi, extent=[0, 1, 1, 0], cmap='gist_earth')
-# plt.title("Flickr Geotagging Counts with Basemap")
-# plt.show()
-plt.clim(0.0,10.0)
+
+# Range of axis 
+plt.xlim([80.125,179.875])
+plt.ylim([-24.875,25.125])
 
 
 
-cb = fig.colorbar(rr_scat_plot, orientation='vertical',fraction=0.046, pad=0.04)
-cb.set_label('[mm/day]', fontsize=22)
-# Amp up the font size on colorbar
-ax = cb.ax
-text = ax.xaxis.label
-font = matplotlib.font_manager.FontProperties(style='italic', size=16)
-text.set_font_properties(font)
-# Up the colorbar ticks
-cb.ax.tick_params(labelsize=16) 
 
-# plt.colorbar()
+
+# New snippet to overlay basemap
+# transform lon / lat coordinates to map projection
+# data['projected_lon'], data['projected_lat'] = m(*(data.Lon.values, data.Lat.values))
+proj_lon, proj_lat = m(lon, lat)
+
+# grid data
+# numcols, numrows = 1000, 1000
+# xi = np.linspace(data['projected_lon'].min(), data['projected_lon'].max(), numcols)
+# yi = np.linspace(data['projected_lat'].min(), data['projected_lat'].max(), numrows)
+# xi, yi = np.meshgrid(xi, yi)
+numcols, numrows = 100, 100
+xi = np.linspace(proj_lon.min(), proj_lon.max(), numcols)
+yi = np.linspace(proj_lat.min(), proj_lat.max(), numrows)
+xi, yi = np.meshgrid(xi, yi)
+
+# quit()
+
+# interpolate
+# x, y, z = data['projected_lon'].values, data['projected_lat'].values, data.Z.values
+# zi = griddata(x, y, z, xi, yi)
+rbf = scipy.interpolate.Rbf(proj_lon, proj_lat, rr, function='thin_plate', smooth=5)
+rri = rbf(xi, yi)
+
+# draw map details
+m.drawmapboundary(fill_color = 'white')
+m.fillcontinents(color='#C0C0C0', lake_color='#7093DB')
+m.drawcountries(
+    linewidth=.75, linestyle='solid', color='#000073',
+    antialiased=True,
+    ax=ax, zorder=3)
+
+
+# define map extent
+lllon = -24.875
+lllat = 80.125
+urlon = 179.875
+urlat = 25.125
+
+m.drawparallels(
+    np.arange(lllat, urlat, 2.),
+    color = 'black', linewidth = 0.5,
+    labels=[True, False, False, False])
+m.drawmeridians(
+    np.arange(lllon, urlon, 2.),
+    color = '0.25', linewidth = 0.5,
+    labels=[False, False, False, True])
+
+# contour plot
+con = m.contourf(xi, yi, rri, zorder=4, alpha=0.6, cmap='RdPu')
+# scatter plot
+m.scatter(
+    proj_lon,
+    proj_lat,
+    color='#545454',
+    edgecolor='#ffffff',
+    alpha=.75,
+    s=50 * norm(rr),
+    cmap='RdPu',
+    ax=ax,
+    vmin=rri.min(), vmax=rri.max(), zorder=4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # -- Colorbar
+# fig.colorbar(im)
+cb = plt.colorbar(con)
+# cb.set_clim(0.0,10.0)
+
+# # cbar=fig.colorbar(im, ticks=[0.0,5.0,10.0])
+# # cbar.set_clim(0.0, 10.0)
+# # plt.clim(0,10)
+
 plt.show()
 
-
 # # Save as PNG
-# plt.savefig('plots/Precip_scatter_non_interp_20000610.png', 
+# plt.savefig('plots/Precip_TPspline_20000610.png', 
 #             bbox_inches='tight', 
 #             optimize=True,
 #             quality=85,
-#             dpi=300)
+#             dpi=30)
+
 
 # plt.close(fig)
 
-
-
-# x, y = themap(gauges['lon'], gauges['lat'])
-# themap.plot(x, y, 
-#             'o',                    # marker shape
-#             color='Red',         # marker colour
-#             markersize=3            # marker size
-#             )
+quit()
 
