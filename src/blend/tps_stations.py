@@ -19,7 +19,7 @@
 #
 # ============================================================================================
 # To be fixed:
-# - rr are floats
+#
 # NaN/inf issue for interpolation
 
 # ================================================================
@@ -74,7 +74,8 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 #gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
 gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                         delimiter=',',
-                        dtype=[('lat', np.float32), ('lon', np.float32), ('rr', 'i2')],
+                        # dtype=[('lat', np.float32), ('lon', np.float32), ('rr', 'i2')],
+                        dtype=[('lat', float), ('lon', float), ('rr', float)],
                         usecols=(2, 3, 0))
 
 
@@ -100,10 +101,18 @@ trmm_lsmask[trmm_lsmask == 100] = 0.
 rr[rr == -9999] = 0.0
 #
 # rr[rr == -9.99900000e+3] = np.nan
-# rr[rr == -9999] = np.nan
+# rr[rr == -9999] = np.NaN
 # rr[rr == -9.99900000e+3] = 0.0
 # rr = rr[~np.isnan(rr)]   # Remove nan
 # ==========================================================================================
+
+# # Now convert NaN to closest station value
+# ind = np.where(~np.isnan(rr))[0]
+# first, last = ind[0], ind[-1]
+# rr[:first] = rr[first]
+# rr[last + 1:] = rr[last]
+
+# rr[~np.isnan(rr).any(axis=1)]
 
 # print rr
 # quit()
@@ -148,19 +157,11 @@ smoothing_val = 2
 
 # Now interpolate
 rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
-
 rri = rbf(xi, yi)
 
 
 print rri
 # quit()
-
-
-
-# m.drawcoastlines(zorder=3)
-# m.drawcountries()
-# m.fillcontinents(color='gainsboro', zorder=1)
-# m.drawmapboundary(fill_color='steelblue')
 
 
 # # Actual plotting ----------------------------------------------------------
@@ -228,7 +229,7 @@ cb2 = m.colorbar(scat_plot,
 
 # Save as PNG
 plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_20000610.png',
-            # bbox_inches='tight',
+            bbox_inches='tight',
             optimize=True,
             quality=85,
             dpi=300)
