@@ -72,11 +72,24 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 # ==========================================================================================
 #
 #gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+# gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+#                         delimiter=',',
+#                         # dtype=[('lat', np.float32), ('lon', np.float32), ('rr', 'i2')],
+#                         dtype=[('lat', float), ('lon', float), ('rr', float)],
+#                         usecols=(2, 3, 0))
+
 gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                         delimiter=',',
+                        missing_values={0:-9999.00},
+                        filling_values={0:1},
                         # dtype=[('lat', np.float32), ('lon', np.float32), ('rr', 'i2')],
                         dtype=[('lat', float), ('lon', float), ('rr', float)],
                         usecols=(2, 3, 0))
+
+# np.genfromtxt('data_table3.txt', skip_header=1,
+#                                  missing_values=(-9999,-9999,-9999),
+#                                  filling_values=(1,1,1))array([[ 4.83900000e-01]])
+
 
 
 # Make lat & lon easier to use down the line:
@@ -90,20 +103,21 @@ rr = gauges['rr']
 # df = df[df.line_race != 0]
 
 
+# Filter out stations without measurements (-999.9)
+# rr[rr == -9999]=0.
+#
+# rr[rr == -9.99900000e+3] = np.nan
+# rr[rr == -9999] = np.NaN
+# rr[rr == -9.99900000e+3] = 0.0
+# rr = rr[~np.isnan(rr)]   # Remove nan
+
+
 # All land points convert to 1
 trmm_lsmask[trmm_lsmask != 100] = 1.
 # All sea points convert to 0
 trmm_lsmask[trmm_lsmask == 100] = 0.
 # trmm_lsmask[trmm_lsmask==100]=np.nan
 
-
-# Filter out stations without measurements (-999.9)
-rr[rr == -9999] = 0.0
-#
-# rr[rr == -9.99900000e+3] = np.nan
-# rr[rr == -9999] = np.NaN
-# rr[rr == -9.99900000e+3] = 0.0
-# rr = rr[~np.isnan(rr)]   # Remove nan
 # ==========================================================================================
 
 # # Now convert NaN to closest station value
@@ -114,8 +128,8 @@ rr[rr == -9999] = 0.0
 
 # rr[~np.isnan(rr).any(axis=1)]
 
-# print rr
-# quit()
+print rr
+quit()
 
 # Design figure
 # ================================================================
@@ -150,94 +164,102 @@ xstat, ystat = m(lon, lat)
 
 # Set up few interolation parameters, this also affects the plot title
 #
-interpolation='linear'
-# interpolation = 'thin_plate'
+# interpolation='linear'
+
+# When doing thing plate spline, pre-step to avoid nasty negative numbers:
+rr[rr == 0] = 1 # a trick to make rr*2 ln(rr) 0
+interpolation = 'thin_plate'
 #
-smoothing_val = 2
 
-# Now interpolate
-rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
-rri = rbf(xi, yi)
+# smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
+smoothing_vals = [2]
+for smoothing_val in smoothing_vals:
+      print 'Now smoothing with parameter set to: ', smoothing_val
+# smoothing_val = 2
 
-
-print rri
-# quit()
-
-
-# # Actual plotting ----------------------------------------------------------
-
-# Plot Interpolation
-# im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
-im = m.pcolor(xnew, ynew, rri, cmap=cm.Blues, zorder=1)
-# Plot Stations
-scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
-
-# ---------------------------------------------------------------------------
-
-# Color bar properties ---------------------------------------
-# Color plot
-im.set_clim(0.0, 15.0)  # affects colorbar range too
-
-# Scatter plot
-scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
-# ------------------------------------------------------------
+      # Now interpolate
+      rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
+      rri = rbf(xi, yi)
 
 
-# # Range of axis
-# plt.xlim([80.125, 179.875])
-# plt.ylim([-24.875, 25.125])
+      print rri
+      # quit()
+
+
+      # # Actual plotting ----------------------------------------------------------
+
+      # Plot Interpolation
+      # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
+      im = m.pcolor(xnew, ynew, rri, cmap=cm.Blues, zorder=1)
+      # Plot Stations
+      scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
+
+      # ---------------------------------------------------------------------------
+
+      # Color bar properties ---------------------------------------
+      # Color plot
+      im.set_clim(0.0, 15.0)  # affects colorbar range too
+
+      # Scatter plot
+      scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
+      # ------------------------------------------------------------
+
+
+      # # Range of axis
+      # plt.xlim([80.125, 179.875])
+      # plt.ylim([-24.875, 25.125])
 
 
 
-# draw coastlines, country boundaries, fill continents.
-m.drawcoastlines(linewidth=0.75)
-m.drawcountries(linewidth=0.75)
-# draw parallels
-parallels = np.arange(-40., 40, 10.)
-m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
-# draw meridians
-meridians = np.arange(80., 180., 10.)
-m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
+      # draw coastlines, country boundaries, fill continents.
+      m.drawcoastlines(linewidth=0.75)
+      m.drawcountries(linewidth=0.75)
+      # draw parallels
+      parallels = np.arange(-40., 40, 10.)
+      m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
+      # draw meridians
+      meridians = np.arange(80., 180., 10.)
+      m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
 
-m.drawlsmask(land_color="#ddaa66",
-             ocean_color="#7777ff",
-             resolution='l')
-
-
-# # -- Colorbar 1 | bottom | interpolated
-cb1 = m.colorbar(im,
-                 location='bottom',
-                 label='Interpolated stations precip'
-                 # fontsize='14'
-                 )
-                 # location='right'
-                 # cax=position
-                 # )
-                 # orientation='vertical',
-                 # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
+      # m.drawlsmask(land_color="#ddaa66",
+      #              ocean_color="#7777ff",
+      #              resolution='l')
 
 
-# # -- Colorbar 2 | right | stations
-cb2 = m.colorbar(scat_plot,
-                 # orientation='horizontal',
-                 label='Station values'
-                 # fraction=0.046,
-                 # pad=0.04,
-                 )
-
-# plt.show()
-
-# Save as PNG
-plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_20000610.png',
-            bbox_inches='tight',
-            optimize=True,
-            quality=85,
-            dpi=300)
+      # # -- Colorbar 1 | bottom | interpolated
+      cb1 = m.colorbar(im,
+                       location='bottom',
+                       label='Interpolated stations precip'
+                       # fontsize='14'
+                       )
+                       # location='right'
+                       # cax=position
+                       # )
+                       # orientation='vertical',
+                       # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
 
 
-plt.close(fig)
+      # # -- Colorbar 2 | right | stations
+      cb2 = m.colorbar(scat_plot,
+                       # orientation='horizontal',
+                       label='Station values'
+                       # fraction=0.046,
+                       # pad=0.04,
+                       )
 
-quit()
+      # plt.show()
+
+      # Save as PNG
+      plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_20000610.png',
+                  bbox_inches='tight',
+                  optimize=True,
+                  quality=85,
+                  dpi=300)
+
+
+      plt.close(fig)
+
+      # quit()
 
 #Create own grid
 # grid data
