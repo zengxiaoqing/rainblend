@@ -20,22 +20,19 @@
 # ============================================================================================
 # To be fixed:
 #
-# NaN/inf issue for interpolation
-
 # ================================================================
 
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import maskoceans
 import matplotlib.pyplot as plt
 import numpy as np
-# import string
 # import matplotlib
 import matplotlib.cm as cm
 import scipy.interpolate
 np.set_printoptions(threshold='nan')  # print full array
-# from matplotlib.mlab import griddata
 from netCDF4 import Dataset
 from matplotlib.colors import Normalize
+from math import sqrt
 
 
 # TRMM bound
@@ -71,23 +68,19 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 # Import data from ASCII CSV file
 # ==========================================================================================
 #
-#gauges = np.genfromtxt("/Users/istepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
 gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                         delimiter=',',
-                        # dtype=[('lat', np.float32), ('lon', np.float32), ('rr', 'i2')],
                         dtype=[('lat', float), ('lon', float), ('rr', float)],
-                        usecols=(2, 3, 0))
+                        usecols=(2, 3, 0),
+                        # missing_values={0:"-9999"},
+                        missing_values=-9999,
+                        usemask=True)
 
 
 # Make lat & lon easier to use down the line:
 lat = gauges['lat']
 lon = gauges['lon']
 rr = gauges['rr']
-
-# df = df[df.line_race != 0]
-# rr = rr[rr.rr != 0]
-
-# df = df[df.line_race != 0]
 
 
 # All land points convert to 1
@@ -96,23 +89,7 @@ trmm_lsmask[trmm_lsmask != 100] = 1.
 trmm_lsmask[trmm_lsmask == 100] = 0.
 # trmm_lsmask[trmm_lsmask==100]=np.nan
 
-
-# Filter out stations without measurements (-999.9)
-rr[rr == -9999] = 0.0
-#
-# rr[rr == -9.99900000e+3] = np.nan
-# rr[rr == -9999] = np.NaN
-# rr[rr == -9.99900000e+3] = 0.0
-# rr = rr[~np.isnan(rr)]   # Remove nan
 # ==========================================================================================
-
-# # Now convert NaN to closest station value
-# ind = np.where(~np.isnan(rr))[0]
-# first, last = ind[0], ind[-1]
-# rr[:first] = rr[first]
-# rr[last + 1:] = rr[last]
-
-# rr[~np.isnan(rr).any(axis=1)]
 
 # print rr
 # quit()
@@ -150,94 +127,120 @@ xstat, ystat = m(lon, lat)
 
 # Set up few interolation parameters, this also affects the plot title
 #
-interpolation='linear'
-# interpolation = 'thin_plate'
-#
-smoothing_val = 2
+# interpolation='linear'
+interpolation = 'thin_plate'
+# interpolation = 'cubic'
 
-# Now interpolate
-rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
-rri = rbf(xi, yi)
+# When doing thing plate spline, pre-step to avoid nasty negative numbers:
+rr[rr <= 1.0] = 1.0 # a trick to make rr*2 ln(rr) 0
 
+# Forthin plate spline input data is pre and post-processed:
+# 1. Square root the data
+# 2. TPS run
+# 3. Square the data
 
-print rri
+rr=np.sqrt(rr)
+
+# print rr
 # quit()
 
 
-# # Actual plotting ----------------------------------------------------------
+#
 
-# Plot Interpolation
-im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
-# im = m.pcolor(xnew, ynew, rri, cmap=cm.Blues, zorder=1)
-# Plot Stations
-scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
-
-# ---------------------------------------------------------------------------
-
-# Color bar properties ---------------------------------------
-# Color plot
-im.set_clim(0.0, 15.0)  # affects colorbar range too
-
-# Scatter plot
-scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
-# ------------------------------------------------------------
+# smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
+# smoothing_vals = [1]
+smoothing_vals = ['automatic']
 
 
-# # Range of axis
-# plt.xlim([80.125, 179.875])
-# plt.ylim([-24.875, 25.125])
+for smoothing_val in smoothing_vals:
+      print 'Now smoothing with parameter set to: ', smoothing_val
+
+      # # Now interpolate with prescribed smoothing parameter (lambda)
+      # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
+      # Interpolate with automatic smoothing parameter selection
+      rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
+
+      rri = rbf(xi, yi)
+
+      # Now square all processed precip back (normalize the array too)
+      rri=rri*rri
+
+      print rri
+      # quit()
+
+      # Actual plotting ----------------------------------------------------------
+
+      # Plot Interpolation
+      # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
+      im = m.pcolor(xnew, ynew, rri, cmap=cm.Blues, zorder=1)
+      # Plot Stations
+      scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
+
+      # ---------------------------------------------------------------------------
+
+      # Color bar properties ---------------------------------------
+      # Color plot
+      im.set_clim(0.0, 15.0)  # affects colorbar range too
+
+      # Scatter plot
+      scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
+      # ------------------------------------------------------------
 
 
-
-# draw coastlines, country boundaries, fill continents.
-m.drawcoastlines(linewidth=0.75)
-m.drawcountries(linewidth=0.75)
-# draw parallels
-parallels = np.arange(-40., 40, 10.)
-m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
-# draw meridians
-meridians = np.arange(80., 180., 10.)
-m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
-
-m.drawlsmask(land_color="#ddaa66",
-             ocean_color="#7777ff",
-             resolution='l')
+      # # Range of axis
+      # plt.xlim([80.125, 179.875])
+      # plt.ylim([-24.875, 25.125])
 
 
-# # -- Colorbar 1 | bottom | interpolated
-cb1 = m.colorbar(im,
-                 location='bottom',
-                 label='Interpolated stations precip'
-                 # fontsize='14'
-                 )
-                 # location='right'
-                 # cax=position
-                 # )
-                 # orientation='vertical',
-                 # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
+      # draw coastlines, country boundaries, fill continents.
+      m.drawcoastlines(linewidth=0.75)
+      m.drawcountries(linewidth=0.75)
+      # draw parallels
+      parallels = np.arange(-40., 40, 10.)
+      m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
+      # draw meridians
+      meridians = np.arange(80., 180., 10.)
+      m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
+
+      # m.drawlsmask(land_color="#ddaa66",
+      #              ocean_color="#7777ff",
+      #              resolution='l')
 
 
-# # -- Colorbar 2 | right | stations
-cb2 = m.colorbar(scat_plot,
-                 # orientation='horizontal',
-                 label='Station values'
-                 # fraction=0.046,
-                 # pad=0.04,
-                 )
-
-# plt.show()
-
-# Save as PNG
-plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_20000610.png',
-            bbox_inches='tight',
-            optimize=True,
-            quality=85,
-            dpi=300)
+      # # -- Colorbar 1 | bottom | interpolated
+      cb1 = m.colorbar(im,
+                       location='bottom',
+                       label='Interpolated stations precip'
+                       # fontsize='14'
+                       )
+                       # location='right'
+                       # cax=position
+                       # )
+                       # orientation='vertical',
+                       # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
 
 
-plt.close(fig)
+      # # -- Colorbar 2 | right | stations
+      cb2 = m.colorbar(scat_plot,
+                       # orientation='horizontal',
+                       label='Station values'
+                       # fraction=0.046,
+                       # pad=0.04,
+                       )
 
-quit()
+      # plt.show()
+
+      # Save as PNG
+      plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_20000610.png',
+                  bbox_inches='tight',
+                  optimize=True,
+                  quality=85,
+                  dpi=300)
+
+
+      plt.close(fig)
+
+      # quit()
 
 #Create own grid
 # grid data
