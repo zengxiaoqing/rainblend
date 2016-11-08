@@ -131,38 +131,43 @@ xstat, ystat = m(lon, lat)
 interpolation = 'thin_plate'
 # interpolation = 'cubic'
 
-# When doing thing plate spline, pre-step to avoid nasty negative numbers:
-rr[rr <= 1.0] = 1.0 # a trick to make rr*2 ln(rr) 0
+# Comment line below to TURN drizzle ON
+# drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
+drizzle = 'ON'        # Keep rain in range 0-1mm in the spline
 
-# Forthin plate spline input data is pre and post-processed:
+
+# Switch for 0-1mm/day range filtering to do log smoothing:
+# ----------------------------------------------------------
+if drizzle == 'OFF':
+    rr[rr <= 1.0] = 1.0        # Trick to make rr*2 ln(rr) = 0
+elif drizzle == 'ON':
+    rr == rr
+# ----------------------------------------------------------
+
+
+# For Thin Plate spline input data is pre and post-processed:
 # 1. Square root the data
 # 2. TPS run
 # 3. Square the data
 
-rr=np.sqrt(rr)
-
-# print rr
-# quit()
+rr = np.sqrt(rr)
 
 
-#
-
-# smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
-# smoothing_vals = [1]
-smoothing_vals = ['automatic']
+smoothing_vals = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
+# smoothing_vals = ['automatic']
 
 
 for smoothing_val in smoothing_vals:
       print 'Now smoothing with parameter set to: ', smoothing_val
 
       # # Now interpolate with prescribed smoothing parameter (lambda)
-      # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
+      rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
       # Interpolate with automatic smoothing parameter selection
-      rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
+      # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
 
       rri = rbf(xi, yi)
 
-      # Now square all processed precip back (normalize the array too)
+      # Now square all processed precip back (normalize precip matrix too)
       rri=rri*rri
 
       print rri
@@ -231,14 +236,14 @@ for smoothing_val in smoothing_vals:
       # plt.show()
 
       # Save as PNG
-      plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_20000610.png',
+      plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_drizzle_'+drizzle+'_20000610.png',
                   bbox_inches='tight',
                   optimize=True,
                   quality=85,
                   dpi=300)
 
 
-      plt.close(fig)
+      # plt.close(fig)
 
       # quit()
 
