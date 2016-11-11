@@ -110,31 +110,33 @@ trmm_lsmask[trmm_lsmask == 100] = 0.
 
 
 # Pk weights:
+# Determined by minimixing the analysis error variance
 
-Pk = (Wrk/sum(Wrj)) * prod(Wthj)    # Distance factor * Orientation factor
+# Eq B
+Ek = (A_k - T_k)^2  # Tk is truth at grid point (k), should be ensemble process
 
-# Distance factor
-if r <=0.33*D:
-  Wrj = 1.0
-else: # elif r > 0.33D
-  Wrj = (1+(rj/D - 0.33)^3)
+# Wki is define by solving the linear equation group:
 
-# Orientation factor
-if thetaJ < math.pi / 2:
-  Wthj = 1-math.cos(thetaJ) # j!=k
-else: # 
-  Wthj = 1
+mu_ki_f = sum(mu_ij_f + mu_ij_o * lambda_i * lambda_j) * W_kj   # i = 1, 2, ..., n.
 
-# Need to:
-# Define D: average station distance
-# Define r: distance between station j and grid point
-# Define thetaJ: angle from the connection line between station j and grid i to the
-#                connection line betwwen grid i and station k.
 
+# mu_ij_f is the first guess (observation) error correlation at two grid boxes i and j
+#
+# mu_ki_f is the first guess erro correlation betweenthe target grid box k and the 
+# observation grid box i, respectively.
+
+# Express the truth (T_k) as the sum of the first guess (F_k) and the first guess error 
+# sigma_k_f, error variance (E_k)^2  defined in eq B:
+(E_k)**2 = (sigma_k_f)**2 * (a - sum(W_ki * mu_ki_f))
+
+# After W_ki is determined from previous step, the analyzed values A_k can be defined 
+# from the first guess and observation through the eq below:
 
 # Plugging weights into blended precip values
+Ak = Fk + sum(Wki(Oi - Fi))
 
-Ria = Ris + sum(Pk*(Rko - Rks))
+
+# Express truth T_k
 
 quit()
 

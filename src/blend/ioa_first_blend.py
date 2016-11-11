@@ -111,8 +111,8 @@ trmm_lsmask[trmm_lsmask == 100] = 0.
 
 # Pk weights:
 
-Pk = (Wrk/sum(Wrj)) * prod(Wthj)    # Distance factor * Orientation factor
-
+Pk = (Wrk/sum(Wrj)) * prod(Wthj)    # [Distance factor * Orientation factor]
+ 
 # Distance factor
 if r <=0.33*D:
   Wrj = 1.0
