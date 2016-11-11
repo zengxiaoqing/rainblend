@@ -23,7 +23,7 @@
 # ================================================================
 
 from mpl_toolkits.basemap import Basemap
-from mpl_toolkits.basemap import maskoceans
+# from mpl_toolkits.basemap import maskoceans
 import matplotlib.pyplot as plt
 import numpy as np
 # import matplotlib
@@ -31,8 +31,8 @@ import matplotlib.cm as cm
 import scipy.interpolate
 np.set_printoptions(threshold='nan')  # print full array
 from netCDF4 import Dataset
-from matplotlib.colors import Normalize
-from math import sqrt
+# from matplotlib.colors import Normalize
+# from math import sqrt
 
 
 # TRMM bound
