@@ -19,7 +19,7 @@
 #
 # ============================================================================================
 # To be fixed:
-#
+# Define and calculate W_ki
 # ================================================================
 
 from mpl_toolkits.basemap import Basemap
@@ -36,8 +36,6 @@ from netCDF4 import Dataset
 import math
 
 print math.pi
-
-# quit()
 
 
 # Product function
@@ -107,36 +105,39 @@ trmm_lsmask[trmm_lsmask == 100] = 0.
 # Intellective objective analysis ----------------------------------------------------------
 
 
-
-
-# Pk weights:
-# Determined by minimixing the analysis error variance
-
-# Eq B
-Ek = (A_k - T_k)^2  # Tk is truth at grid point (k), should be ensemble process
+# Weights:
+# Determined by minimizing the analysis error variance
 
 # Wki is define by solving the linear equation group:
-
 mu_ki_f = sum(mu_ij_f + mu_ij_o * lambda_i * lambda_j) * W_kj   # i = 1, 2, ..., n.
-
 
 # mu_ij_f is the first guess (observation) error correlation at two grid boxes i and j
 #
-# mu_ki_f is the first guess erro correlation betweenthe target grid box k and the 
+# mu_ki_f is the first guess error correlation betweenthe target grid box k and the 
 # observation grid box i, respectively.
 
-# Express the truth (T_k) as the sum of the first guess (F_k) and the first guess error 
-# sigma_k_f, error variance (E_k)^2  defined in eq B:
-(E_k)**2 = (sigma_k_f)**2 * (a - sum(W_ki * mu_ki_f))
-
 # After W_ki is determined from previous step, the analyzed values A_k can be defined 
-# from the first guess and observation through the eq below:
+# from the first guess and observation through the eq below.
 
-# Plugging weights into blended precip values
+# Translated into TRMM42B v7.0 imported ta above, we have:
+
+
+
+# Final expression: plugging weights into blended precip values
 Ak = Fk + sum(Wki(Oi - Fi))
 
+# Eq B
+Ek = (A_k - T_k)^2  # T_k is truth at grid point (k), should be ensemble process
 
-# Express truth T_k
+# ERROR variance for resulting Ak =======================================================
+#
+# Express the truth (T_k) as the sum of the first guess (F_k) and the first guess error 
+# sigma_k_f, error variance (E_k)^2  defined in eq B:
+
+# E_k_sqr = (E_k)**2
+E_k_sqr = (sigma_k_f)**2 * (1 - sum(W_ki * mu_ki_f))
+# =======================================================================================
+
 
 quit()
 
