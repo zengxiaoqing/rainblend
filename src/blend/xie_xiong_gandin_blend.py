@@ -113,15 +113,17 @@ mu_ki_f = sum(mu_ij_f + mu_ij_o * lambda_i * lambda_j) * W_kj   # i = 1, 2, ...,
 
 # mu_ij_f is the first guess (observation) error correlation at two grid boxes i and j
 #
-# mu_ki_f is the first guess error correlation betweenthe target grid box k and the 
+# mu_ki_f is the first guess error correlation between the target grid box k and the 
 # observation grid box i, respectively.
 
+mu_ij_o = 1 for i=j,
+mu_ij_o = 0, for i!=j
 # After W_ki is determined from previous step, the analyzed values A_k can be defined 
 # from the first guess and observation through the eq below.
 
 # Translated into TRMM42B v7.0 imported ta above, we have:
 
-
+mu_ki_f = sum(mu_ij_f + )
 
 # Final expression: plugging weights into blended precip values
 Ak = Fk + sum(Wki(Oi - Fi))
