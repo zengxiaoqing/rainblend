@@ -1,14 +1,14 @@
 # Make python script executable
 #!/usr/bin/python
 
-# ioa_first_blend.py
+# xie_xiong_gandin_blend.py
 
-# Method of Intellective Objective Analysis (Lu et al, 2003)
+# Method of Ganding 1964 (Xie and Xiong 2011)
 # is applied to TRMM v.7 gridded precipitation dataset to merge
-# with the SACA database station data.
+# with the SACA database station data .
 
 # Paper: 
-# A fusing technique with satellite precipitation estimate and raingauge data
+# Gauge-satellite merged precip analysis
 
 
 # ==========================================
