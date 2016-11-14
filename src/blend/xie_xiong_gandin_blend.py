@@ -3,12 +3,15 @@
 
 # xie_xiong_gandin_blend.py
 
-# Method of Ganding 1964 (Xie and Xiong 2011)
+# Optimal Interpolation from Gandin 1965 (Xie and Xiong 2011)
 # is applied to TRMM v.7 gridded precipitation dataset to merge
 # with the SACA database station data .
 
-# Paper: 
-# Gauge-satellite merged precip analysis
+# Paper:
+# A conceptual model for constructing high‐resolution gauge‐satellite merged precipitation analyses
+# P Xie, AY Xiong
+# Journal of Geophysical Research: Atmospheres 116 (D21)
+# NOOA
 
 
 # ==========================================
@@ -80,7 +83,6 @@ gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_st
                         delimiter=',',
                         dtype=[('lat', float), ('lon', float), ('rr', float)],
                         usecols=(2, 3, 0),
-                        # missing_values={0:"-9999"},
                         missing_values=-9999,
                         usemask=True)
 
@@ -116,8 +118,8 @@ mu_ki_f = sum(mu_ij_f + mu_ij_o * lambda_i * lambda_j) * W_kj   # i = 1, 2, ...,
 # mu_ki_f is the first guess error correlation between the target grid box k and the 
 # observation grid box i, respectively.
 
-mu_ij_o = 1 for i=j,
-mu_ij_o = 0, for i!=j
+mu_ij_o = 1 for i == j
+mu_ij_o = 0 for i != j
 # After W_ki is determined from previous step, the analyzed values A_k can be defined 
 # from the first guess and observation through the eq below.
 
