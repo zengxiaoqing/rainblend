@@ -127,8 +127,8 @@ xstat, ystat = m(lon, lat)
 
 # Set up few interolation parameters, this also affects the plot title
 #
-# interpolation='linear'
-interpolation = 'thin_plate'
+interpolation='linear'
+# interpolation = 'thin_plate'
 # interpolation = 'cubic'
 
 # Comment line below to TURN drizzle ON
@@ -152,16 +152,19 @@ elif drizzle == 'ON':
 
 rr = np.sqrt(rr)
 
+epsilon_list = [1, 10, 100, 1000, 10000, 100000, 1000000] # From 1 - million
+  
 
 smoothing_vals = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
 # smoothing_vals = ['automatic']
 
+for epsilon_val in epsilon_list:
 
-for smoothing_val in smoothing_vals:
+  for smoothing_val in smoothing_vals:
       print 'Now smoothing with parameter set to: ', smoothing_val
 
       # # Now interpolate with prescribed smoothing parameter (lambda)
-      rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation, smooth=smoothing_val)
+      rbf = scipy.interpolate.Rbf(lon, lat, rr, function = interpolation, smooth = smoothing_val, epsilon = epsilon_val)
       # Interpolate with automatic smoothing parameter selection
       # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
 
@@ -236,7 +239,7 @@ for smoothing_val in smoothing_vals:
       # plt.show()
 
       # Save as PNG
-      plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_drizzle_'+drizzle+'_20000610.png',
+      plt.savefig('plots/Precip_stations_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_epsilon_'+str(epsilon_val)+'_drizzle_'+drizzle+'_20000610.png',
                   bbox_inches='tight',
                   optimize=True,
                   quality=85,
