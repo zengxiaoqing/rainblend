@@ -24,6 +24,8 @@
 
 from mpl_toolkits.basemap import Basemap
 # from mpl_toolkits.basemap import maskoceans
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 # import matplotlib
@@ -34,11 +36,13 @@ from netCDF4 import Dataset
 # from matplotlib.colors import Normalize
 # from math import sqrt
 
+# quit()
 
 # TRMM bound
 # ==========================================================================================
-in_path = "/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"   # work station
-# in_path = "/Users/istepanov/github/TRMM_blend/TRMM_nc/"                           # rMBP
+# in_path = "/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"   # work station
+# in_path = "/Users/istepanov/github/TRMM_blend/TRMM_nc/"                             # rMBP
+in_path = "/home/besselaa/Igor/data/land_only/"                                        # birdexp08
 in_path_lsmsk_TRMM = "/nobackup/users/stepanov/TRMM_data/Land_Sea_Mask/"
 # ==========================================================================================
 
@@ -57,9 +61,9 @@ lons = nc_trmm.variables['longitude']
 lats = nc_trmm.variables['latitude']
 
 # Land Sea Maks TRMM specific
-file_lsm_TRMM = 'TMPA_mask_georef_SACA_match_TRMM_grid.nc'
-nc_lsmask_trmm = Dataset(in_path_lsmsk_TRMM+file_lsm_TRMM, 'r')
-trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
+# file_lsm_TRMM = 'TMPA_mask_georef_SACA_match_TRMM_grid.nc'
+# nc_lsmask_trmm = Dataset(in_path_lsmsk_TRMM+file_lsm_TRMM, 'r')
+# trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 
 # ==========================================================================================
 
@@ -68,7 +72,18 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 # Import data from ASCII CSV file
 # ==========================================================================================
 #
-gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+
+# workstation
+# gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+#                        delimiter=',',
+#                        dtype=[('lat', float), ('lon', float), ('rr', float)],
+#                        usecols=(2, 3, 0),
+                        # missing_values={0:"-9999"},
+#                        missing_values=-9999,
+#                        usemask=True)
+
+# birdexp08
+gauges = np.genfromtxt("/home/besselaa/Igor/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                         delimiter=',',
                         dtype=[('lat', float), ('lon', float), ('rr', float)],
                         usecols=(2, 3, 0),
@@ -84,9 +99,9 @@ rr = gauges['rr']
 
 
 # All land points convert to 1
-trmm_lsmask[trmm_lsmask != 100] = 1.
+# trmm_lsmask[trmm_lsmask != 100] = 1.
 # All sea points convert to 0
-trmm_lsmask[trmm_lsmask == 100] = 0.
+# trmm_lsmask[trmm_lsmask == 100] = 0.
 # trmm_lsmask[trmm_lsmask==100]=np.nan
 
 # ==========================================================================================
@@ -159,6 +174,7 @@ smoothing_vals = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
 # smoothing_vals = ['automatic']
 
 for epsilon_val in epsilon_list:
+  print 'Now setting epsilon parameter to: ', epsilon_val
 
   for smoothing_val in smoothing_vals:
       print 'Now smoothing with parameter set to: ', smoothing_val
