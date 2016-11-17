@@ -142,9 +142,9 @@ xstat, ystat = m(lon, lat)
 
 # Set up few interolation parameters, this also affects the plot title
 #
-interpolation='linear'
+# interpolation='linear'
 # interpolation = 'thin_plate'
-# interpolation = 'cubic'
+interpolation = 'cubic'
 
 # Comment line below to TURN drizzle ON
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
@@ -174,10 +174,11 @@ smoothing_vals = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
 # smoothing_vals = ['automatic']
 
 for epsilon_val in epsilon_list:
-  print 'Now setting epsilon parameter to: ', epsilon_val
+#  print 'Now setting epsilon parameter to: ', epsilon_val
 
   for smoothing_val in smoothing_vals:
       print 'Now smoothing with parameter set to: ', smoothing_val
+      print 'Now setting epsilon parameter to: ', epsilon_val
 
       # # Now interpolate with prescribed smoothing parameter (lambda)
       rbf = scipy.interpolate.Rbf(lon, lat, rr, function = interpolation, smooth = smoothing_val, epsilon = epsilon_val)
