@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Make python script executable
 #!/usr/bin/python
 
@@ -20,8 +22,10 @@
 # ============================================================================================
 # Updates list
 #
+# Code edited through DIVA user guide for approximations
 # ============================================================================================
 # To be fixed:
+#
 # Define and calculate W_ki
 # ================================================================
 
@@ -123,12 +127,12 @@ mu_ij_o = 0 for i != j
 # After W_ki is determined from previous step, the analyzed values A_k can be defined 
 # from the first guess and observation through the eq below.
 
-# Translated into TRMM42B v7.0 imported ta above, we have:
+# Translated into TRMM42B v7.0 imported above, we have:
 
 mu_ki_f = sum(mu_ij_f + )
 
 # Final expression: plugging weights into blended precip values
-Ak = Fk + sum(Wki(Oi - Fi))
+Ak = Fk + np.sum(Wki(Oi - Fi))
 
 # Eq B
 Ek = (A_k - T_k)^2  # T_k is truth at grid point (k), should be ensemble process
@@ -141,6 +145,12 @@ Ek = (A_k - T_k)^2  # T_k is truth at grid point (k), should be ensemble process
 # E_k_sqr = (E_k)**2
 E_k_sqr = (sigma_k_f)**2 * (1 - sum(W_ki * mu_ki_f))
 # =======================================================================================
+
+
+# =======================================================================================
+# Py version of DIVA and Xie and Xiong 2011
+
+
 
 
 quit()
