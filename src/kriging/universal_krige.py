@@ -24,7 +24,7 @@ UK = UniversalKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='linea
 # (See UniversalKriging.__doc__ for more information.)
 z, ss = UK.execute('grid', gridx, gridy)
 
-Three-Dimensional Kriging Example
+# Three-Dimensional Kriging Example
 
 from pykrige.ok3d import OrdinaryKriging3D
 from pykrige.uk3d import UniversalKriging3D
