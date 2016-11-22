@@ -108,7 +108,177 @@ trmm_lsmask[trmm_lsmask == 100] = 0.
 # print rr
 # quit()
 
-# Intellective objective analysis ----------------------------------------------------------
+
+# Design figure
+# ================================================================
+xsize = 20
+ysize = 10
+
+fig = plt.figure(figsize=(xsize,ysize))
+# fig, ax = plt.subplots(figsize=(xsize, ysize))
+# ================================================================
+
+# # Interpolation
+# # =============================================================================
+# # Radial Basis Function
+
+
+m = Basemap(projection='gall',
+            llcrnrlon=80.125,              # lower-left corner longitude
+            llcrnrlat=-24.875,               # lower-left corner latitude
+            urcrnrlon=179.875,               # upper-right corner longitude
+            urcrnrlat=25.125,               # upper-right corner latitude
+            resolution='i',
+            area_thresh=100.0,
+            )
+
+
+# # Create regular grid from TRMM lon/lat
+xi, yi = np.meshgrid(lons, lats)
+xnew, ynew = m(xi, yi)
+
+# Create grid from stations data:
+xstat, ystat = m(lon, lat)
+
+
+# Set up few interolation parameters, this also affects the plot title
+#
+interpolation='linear'
+# interpolation = 'thin_plate'
+# interpolation = 'cubic'
+
+# Comment line below to TURN drizzle ON
+# drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
+drizzle = 'ON'        # Keep rain in range 0-1mm in the spline
+
+
+# Switch for 0-1mm/day range filtering to do log smoothing:
+# ----------------------------------------------------------
+if drizzle == 'OFF':
+    rr[rr <= 1.0] = 1.0        # Trick to make rr*2 ln(rr) = 0
+elif drizzle == 'ON':
+    rr == rr
+# ----------------------------------------------------------
+
+
+# For Thin Plate spline input data is pre and post-processed:
+# 1. Square root the data
+# 2. TPS run
+# 3. Square the data
+
+rr = np.sqrt(rr)
+
+epsilon_list = [1] # From 1 - million
+  
+
+smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
+# smoothing_vals = ['automatic']
+
+for epsilon_val in epsilon_list:
+#  print 'Now setting epsilon parameter to: ', epsilon_val
+
+  for smoothing_val in smoothing_vals:
+      print 'Now smoothing with parameter set to: ', smoothing_val
+      print 'Now setting epsilon parameter to: ', epsilon_val
+
+      # # Now interpolate with prescribed smoothing parameter (lambda)
+      rbf = scipy.interpolate.Rbf(lon, lat, rr, function = interpolation, smooth = smoothing_val, epsilon = epsilon_val)
+      # Interpolate with automatic smoothing parameter selection
+      # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
+
+      rri = rbf(xi, yi)
+
+      # Now square all processed precip back (normalize precip matrix too)
+      rri=rri*rri
+
+      print rri
+      # quit()
+
+
+      # Intellective objective analysis ----------------------------------------------------------
+
+      # Adjust geospatial calibration of station data to TRMM grid (weights free)
+
+      # F0 = G0 + (Fi - Gi)
+
+      # RRo = trmm_precip + (rr - trmm_precip)
+      RRo = trmm_precip + (rri - trmm_precip)
+
+      print RRo
+
+
+      # Actual plotting ----------------------------------------------------------
+
+      # Plot Interpolation
+      # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
+      im = m.pcolor(xnew, ynew, rri, cmap=cm.Blues, zorder=1)
+      # Plot Stations
+      scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
+
+      # ---------------------------------------------------------------------------
+
+      # Color bar properties ---------------------------------------
+      # Color plot
+      im.set_clim(0.0, 150.0)  # affects colorbar range too
+
+      # Scatter plot
+      scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
+      # ------------------------------------------------------------
+
+
+      # # Range of axis
+      # plt.xlim([80.125, 179.875])
+      # plt.ylim([-24.875, 25.125])
+
+
+      # draw coastlines, country boundaries, fill continents.
+      m.drawcoastlines(linewidth=0.75)
+      m.drawcountries(linewidth=0.75)
+      # draw parallels
+      parallels = np.arange(-40., 40, 10.)
+      m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
+      # draw meridians
+      meridians = np.arange(80., 180., 10.)
+      m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
+
+      # m.drawlsmask(land_color="#ddaa66",
+      #              ocean_color="#7777ff",
+      #              resolution='l')
+
+
+      # # -- Colorbar 1 | bottom | interpolated
+      cb1 = m.colorbar(im,
+                       location='bottom',
+                       label='Interpolated stations precip'
+                       # fontsize='14'
+                       )
+                       # location='right'
+                       # cax=position
+                       # )
+                       # orientation='vertical',
+                       # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
+
+
+      # # -- Colorbar 2 | right | stations
+      cb2 = m.colorbar(scat_plot,
+                       # orientation='horizontal',
+                       label='Station values'
+                       # fraction=0.046,
+                       # pad=0.04,
+                       )
+
+      # plt.show()
+
+      # Save as PNG
+      plt.savefig('plots/Precip_blend_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_epsilon_'+str(epsilon_val)+'_drizzle_'+drizzle+'_20000610.png',
+                  bbox_inches='tight',
+                  optimize=True,
+                  quality=85,
+                  dpi=300)
+
+quit()
+
+
 
 
 # Weights:
@@ -122,14 +292,14 @@ mu_ki_f = sum(mu_ij_f + mu_ij_o * lambda_i * lambda_j) * W_kj   # i = 1, 2, ...,
 # mu_ki_f is the first guess error correlation between the target grid box k and the 
 # observation grid box i, respectively.
 
-mu_ij_o = 1 for i == j
-mu_ij_o = 0 for i != j
+# mu_ij_o = 1 for i == j
+# mu_ij_o = 0 for i != j
 # After W_ki is determined from previous step, the analyzed values A_k can be defined 
 # from the first guess and observation through the eq below.
 
 # Translated into TRMM42B v7.0 imported above, we have:
 
-mu_ki_f = sum(mu_ij_f + )
+# mu_ki_f = sum(mu_ij_f + )
 
 # Final expression: plugging weights into blended precip values
 Ak = Fk + np.sum(Wki(Oi - Fi))
