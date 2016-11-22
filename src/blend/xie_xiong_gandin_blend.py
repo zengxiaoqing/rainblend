@@ -211,7 +211,7 @@ for epsilon_val in epsilon_list:
 
       # Plot Interpolation
       # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
-      im = m.pcolor(xnew, ynew, rri, cmap=cm.Blues, zorder=1)
+      im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)
       # Plot Stations
       scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
 
