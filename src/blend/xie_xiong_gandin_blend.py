@@ -202,7 +202,7 @@ for epsilon_val in epsilon_list:
       # F0 = G0 + (Fi - Gi)
 
       # RRo = trmm_precip + (rr - trmm_precip)
-      RRo = trmm_precip + (rri - trmm_precip)
+      RRo = trmm_precip + 4.75 * (rri - trmm_precip)
 
       print RRo
 
@@ -211,7 +211,8 @@ for epsilon_val in epsilon_list:
 
       # Plot Interpolation
       # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
-      im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)
+      # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)  # Blue cmap
+      im = m.pcolor(xnew, ynew, RRo, cmap=cm.cool, zorder=1)    # Stations cmap
       # Plot Stations
       scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
 

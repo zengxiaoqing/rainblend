@@ -103,9 +103,10 @@ print 'lats_ls_mask', lats_ls_mask
 # Extract the actual variable
 # For TRMM data go from 1-365 in ncview, but python counts 0-364
 
-trmm_precip        = nc_trmm.variables['r'][89,:,:]                        # [time, lat, lon], 0= 01.01.2013 (python). 90 is 31st March ideally.
-saca_precip        = nc_SACA_rr.variables['rr'][11688,:,:]                # 11688 = 01.Jan.2013. (python)
-trmm_lsmask        = nc_lsmask_trmm.variables['landseamask'][:,:]         # [landseamask, latitude, longitude]   
+# trmm_precip        = nc_trmm.variables['r'][89,:,:]                  # [time, lat, lon], 0= 01.01.2013 (python). 90 is 31st March ideally.
+trmm_precip        = nc_trmm.variables['r'][161,:,:]                  # [time, lat, lon], 0= 01.01.2013 (python). 161 is 31st March ideally.
+saca_precip        = nc_SACA_rr.variables['rr'][11688,:,:]           # 11688 = 01.Jan.2013. (python)
+trmm_lsmask        = nc_lsmask_trmm.variables['landseamask'][:,:]    # [landseamask, latitude, longitude]   
 
 # 1-12418 in ncview, but python counts 0-12417
 
@@ -395,8 +396,12 @@ cbar.set_label('mm',fontsize=16)
 
 # Add title 
 #plt.title('TRMM precipitation | w/o Land Sea Mask | 01.01.2013', size=26) 
-plt.title('TRMM precipitation | w/ Land Sea Mask | 31.03.2000', size=26) 
+# plt.title('TRMM precipitation | w/ Land Sea Mask | 31.03.2000', size=26) 
+plt.title('TRMM precipitation | w/ Land Sea Mask | 10.06.2010', size=26) 
 #plt.title('TRMM precipitation sum 2013 | w/ Land Sea Mask', size=26) 
+
+
+fig.tight_layout()
 
 
 # Save plot
@@ -415,7 +420,8 @@ plt.title('TRMM precipitation | w/ Land Sea Mask | 31.03.2000', size=26)
 #savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_maks_IN_31032000_white_zero_mm.png',optimize=True,quality=85,dpi=300)
 # test of date +-1
 #savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_maks_IN_31032000_white_zero_mm_plus_one day.png',optimize=True,quality=85,dpi=300)
-savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_maks_IN_31032000_white_zero_mm_min_one day.png',optimize=True,quality=85,dpi=300)
+# savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_maks_IN_31032000_white_zero_mm_min_one day.png',optimize=True,quality=85,dpi=300)
+savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_maks_IN_10062010_white_zero_mm_min_one day.png',optimize=True,quality=85,dpi=300)
 #savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_maks_IN.png_precip_lev_max100.png',optimize=True,quality=85,dpi=300)
 
 
