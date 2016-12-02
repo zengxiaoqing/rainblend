@@ -143,9 +143,9 @@ xstat, ystat = m(lon, lat)
 
 # Set up few interolation parameters, this also affects the plot title
 #
-interpolation='linear'
+# interpolation='linear'
 # interpolation = 'thin_plate'
-# interpolation = 'cubic'
+interpolation = 'cubic'
 
 # Comment line below to TURN drizzle ON
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
@@ -191,7 +191,7 @@ for epsilon_val in epsilon_list:
       # Now square all processed precip back (normalize precip matrix too)
       rri=rri*rri
 
-      print rri
+      print 'Interpolated station precip is: ', rri
       # quit()
 
 
@@ -204,7 +204,7 @@ for epsilon_val in epsilon_list:
       # RRo = trmm_precip + (rr - trmm_precip)
       RRo = trmm_precip + 4.75 * (rri - trmm_precip)
 
-      print RRo
+      print 'Blended precip is: ', RRo
 
 
       # Actual plotting ----------------------------------------------------------
@@ -212,15 +212,17 @@ for epsilon_val in epsilon_list:
       # Plot Interpolation
       # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
       # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)  # Blue cmap
-      im = m.pcolor(xnew, ynew, RRo, cmap=cm.cool, zorder=1)    # Stations cmap
+      im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
       # Plot Stations
-      scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
+      # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)  # old pink cmap
+      scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.Blues, zorder=2)  # blue red contrast
 
       # ---------------------------------------------------------------------------
 
       # Color bar properties ---------------------------------------
       # Color plot
-      im.set_clim(0.0, 150.0)  # affects colorbar range too
+      # im.set_clim(0.0, 150.0)  # affects colorbar range too
+      im.set_clim(0.0, 30.0)  # affects colorbar range too
 
       # Scatter plot
       scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
