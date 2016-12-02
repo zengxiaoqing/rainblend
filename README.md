@@ -3,6 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)]()
 [![AUR](https://img.shields.io/aur/license/yaourt.svg)]()
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](www.ecad.eu)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)]()
 
 TRMM precipitation retreivals combined with rain gauge station measurements for SACA domain (satSACA)
