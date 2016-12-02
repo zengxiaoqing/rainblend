@@ -1,5 +1,5 @@
 
-[![Join the chat at https://gitter.im/TRMM_blend/Lobby](https://badges.gitter.im/TRMM_blend/Lobby.svg)](https://gitter.im/TRMM_blend/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/TRMM_blend/Lobby](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/TRMM_blend/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)]()
 
 
