@@ -195,17 +195,25 @@ for epsilon_val in epsilon_list:
         rri = rri*rri
 
         print 'Interpolated station precip is: ', rri
-        # quit()
-
+        
 
         # Intellective objective analysis ----------------------------------------------------------
+
+        # Deriving weights ======================
+        # Optimal weight matrix via Kalnay
+        Wght_static = 4.75
+        Wght_dyn = 
+
+
+        # =======================================
+
 
         # Adjust geospatial calibration of station data to TRMM grid (weights free)
 
         # F0 = G0 + (Fi - Gi)
 
-        # RRo = trmm_precip + (rr - trmm_precip)
-        RRo = trmm_precip + 4.75 * (rri - trmm_precip)
+        # RRo = trmm_precip + (rr - trmm_precip*factor)
+        RRo = trmm_precip + Wght_static * (rri - trmm_precip)
 
         print 'Blended precip is: ', RRo
 
