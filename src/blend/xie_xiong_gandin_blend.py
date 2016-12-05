@@ -177,107 +177,114 @@ smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
 for epsilon_val in epsilon_list:
 #  print 'Now setting epsilon parameter to: ', epsilon_val
 
-  for smoothing_val in smoothing_vals:
-      print 'Now smoothing with parameter set to: ', smoothing_val
-      print 'Now setting epsilon parameter to: ', epsilon_val
+    for smoothing_val in smoothing_vals:
+        print 'Now smoothing with parameter set to: ', smoothing_val
+        print 'Now setting epsilon parameter to: ', epsilon_val
 
-      # # Now interpolate with prescribed smoothing parameter (lambda)
-      rbf = scipy.interpolate.Rbf(lon, lat, rr, function = interpolation, smooth = smoothing_val, epsilon = epsilon_val)
-      # Interpolate with automatic smoothing parameter selection
-      # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
+        # # Now interpolate with prescribed smoothing parameter (lambda)
+        rbf = scipy.interpolate.Rbf(lon, lat, rr,
+                                    function=interpolation,
+                                    smooth=smoothing_val,
+                                    epsilon=epsilon_val)
+        # Interpolate with automatic smoothing parameter selection
+        # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
 
-      rri = rbf(xi, yi)
+        rri = rbf(xi, yi)
 
-      # Now square all processed precip back (normalize precip matrix too)
-      rri=rri*rri
+        # Now square all processed precip back (normalize precip matrix too)
+        rri = rri*rri
 
-      print 'Interpolated station precip is: ', rri
-      # quit()
-
-
-      # Intellective objective analysis ----------------------------------------------------------
-
-      # Adjust geospatial calibration of station data to TRMM grid (weights free)
-
-      # F0 = G0 + (Fi - Gi)
-
-      # RRo = trmm_precip + (rr - trmm_precip)
-      RRo = trmm_precip + 4.75 * (rri - trmm_precip)
-
-      print 'Blended precip is: ', RRo
+        print 'Interpolated station precip is: ', rri
+        # quit()
 
 
-      # Actual plotting ----------------------------------------------------------
+        # Intellective objective analysis ----------------------------------------------------------
 
-      # Plot Interpolation
-      # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
-      # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)  # Blue cmap
-      im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
-      # Plot Stations
-      # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)  # old pink cmap
-      scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.Blues, zorder=2)  # blue red contrast
+        # Adjust geospatial calibration of station data to TRMM grid (weights free)
 
-      # ---------------------------------------------------------------------------
+        # F0 = G0 + (Fi - Gi)
 
-      # Color bar properties ---------------------------------------
-      # Color plot
-      # im.set_clim(0.0, 150.0)  # affects colorbar range too
-      im.set_clim(0.0, 30.0)  # affects colorbar range too
+        # RRo = trmm_precip + (rr - trmm_precip)
+        RRo = trmm_precip + 4.75 * (rri - trmm_precip)
 
-      # Scatter plot
-      scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
-      # ------------------------------------------------------------
+        print 'Blended precip is: ', RRo
 
 
-      # # Range of axis
-      # plt.xlim([80.125, 179.875])
-      # plt.ylim([-24.875, 25.125])
+        # Actual plotting ----------------------------------------------------------
+
+        # Plot Interpolation
+        # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
+        # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)  # Blue cmap
+        im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
+        # Plot Stations
+        # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)  # old pink cmap
+        scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.Blues, zorder=2)  # blue red contrast
+
+        # ---------------------------------------------------------------------------
+
+        # Color bar properties ---------------------------------------
+        # Color plot
+        # im.set_clim(0.0, 150.0)  # affects colorbar range too
+        im.set_clim(0.0, 30.0)  # affects colorbar range too
+
+        # Scatter plot
+        scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
+        # ------------------------------------------------------------
 
 
-      # draw coastlines, country boundaries, fill continents.
-      m.drawcoastlines(linewidth=0.75)
-      m.drawcountries(linewidth=0.75)
-      # draw parallels
-      parallels = np.arange(-40., 40, 10.)
-      m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
-      # draw meridians
-      meridians = np.arange(80., 180., 10.)
-      m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
-
-      # m.drawlsmask(land_color="#ddaa66",
-      #              ocean_color="#7777ff",
-      #              resolution='l')
+        # # Range of axis
+        # plt.xlim([80.125, 179.875])
+        # plt.ylim([-24.875, 25.125])
 
 
-      # # -- Colorbar 1 | bottom | interpolated
-      cb1 = m.colorbar(im,
-                       location='bottom',
-                       label='Interpolated stations precip'
-                       # fontsize='14'
-                       )
-                       # location='right'
-                       # cax=position
-                       # )
-                       # orientation='vertical',
-                       # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
+        # draw coastlines, country boundaries, fill continents.
+        m.drawcoastlines(linewidth=0.75)
+        m.drawcountries(linewidth=0.75)
+        # draw parallels
+        parallels = np.arange(-40., 40, 10.)
+        m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
+        # draw meridians
+        meridians = np.arange(80., 180., 10.)
+        m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
+
+        # m.drawlsmask(land_color="#ddaa66",
+        #              ocean_color="#7777ff",
+        #              resolution='l')
 
 
-      # # -- Colorbar 2 | right | stations
-      cb2 = m.colorbar(scat_plot,
-                       # orientation='horizontal',
-                       label='Station values'
-                       # fraction=0.046,
-                       # pad=0.04,
-                       )
+        # # -- Colorbar 1 | bottom | interpolated
+        cb1 = m.colorbar(im,
+                         location='bottom',
+                         label='Interpolated stations precip'
+                         # fontsize='14'
+                        )
+                         # location='right'
+                         # cax=position
+                         # )
+                         # orientation='vertical',
+                         # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0,
+                                  # 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
 
-      # plt.show()
 
-      # Save as PNG
-      plt.savefig('plots/Precip_blend_'+interpolation+'_spline_smoothin_eq_'+str(smoothing_val)+'_epsilon_'+str(epsilon_val)+'_drizzle_'+drizzle+'_20000610.png',
-                  bbox_inches='tight',
-                  optimize=True,
-                  quality=85,
-                  dpi=300)
+        # # -- Colorbar 2 | right | stations
+        cb2 = m.colorbar(scat_plot,
+                         # orientation='horizontal',
+                         label='Station values'
+                         # fraction=0.046,
+                         # pad=0.04,
+                        )
+
+        # plt.show()
+
+        # Save as PNG
+        plt.savefig('plots/Precip_blend_'+interpolation+'_spline_smoothin_eq_'+
+                    str(smoothing_val)+'_epsilon_'+
+                    str(epsilon_val)+'_drizzle_'+
+                    drizzle+'_20000610.png',
+                    bbox_inches='tight',
+                    optimize=True,
+                    quality=85,
+                    dpi=300)
 
 quit()
 
