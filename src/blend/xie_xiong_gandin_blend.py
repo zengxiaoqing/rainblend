@@ -144,8 +144,8 @@ xstat, ystat = m(lon, lat)
 # Set up few interolation parameters, this also affects the plot title
 #
 # interpolation='linear'
-# interpolation = 'thin_plate'
-interpolation = 'cubic'
+interpolation = 'thin_plate'
+# interpolation = 'cubic'
 
 # Comment line below to TURN drizzle ON
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
@@ -201,14 +201,47 @@ for epsilon_val in epsilon_list:
 
         # Deriving weights ======================
         # Optimal weight matrix via Kalnay
-        Wght_static = 4.75
-        Wght_dyn = 
 
+        # Fixed
+        Wght_static = 4.75
+        
+        # Dynamic
+        # Most important is to quantify 3 errors here
+
+        # Satellite retrieval error (calibrated to stations)
+        Sig_f = 2.93 + 9.845 * trmm_precip
+
+        # Rain gauge error est: =================
+        # params:
+        N_eg = N_g0 + N_g1/8. + N_g2/32.         # Number of equivalent gauges
+        N_eg_stat = 20                           # Number of equivalent gauges
+        h0 = 60.0                                # E-folding distance
+        # h = 
+
+        Mij_o = 1 # i=j
+        Mij_o = 0 # i!=j   # convert later to IF statement
+
+        # Rain gauge error:
+        Sig_o = 0.15 + 4.09 * rri / (N_eg_stat)
+
+        # Satellite error correlation at two separated grid boxes
+        Mij_f = -0.025 + 1.196(math.exp(-h/h0))
+
+        # Combined params:
+        lambda_i = Sig_o / Sig_f
+        lambda_j = Sig_o / Sig_f  # to change 
+
+
+
+        # Equation to solve for dynamic weights:
+        sum(Mi_f + Mi_o * lambda_i * lambda_j) * W_kj = Mki_f    # W_kj is the weight to derive
+
+        # Wght_dyn =
 
         # =======================================
 
 
-        # Adjust geospatial calibration of station data to TRMM grid (weights free)
+        # Geospatial calibration of station data to TRMM grid (weights free)
 
         # F0 = G0 + (Fi - Gi)
 
@@ -220,14 +253,13 @@ for epsilon_val in epsilon_list:
 
         # Actual plotting ----------------------------------------------------------
 
-        # Plot Interpolation
+        # Plot Interpolated fiedld (analysis)
         # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
         # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)  # Blue cmap
         im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
         # Plot Stations
         # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)  # old pink cmap
         scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.Blues, zorder=2)  # blue red contrast
-
         # ---------------------------------------------------------------------------
 
         # Color bar properties ---------------------------------------
@@ -238,7 +270,6 @@ for epsilon_val in epsilon_list:
         # Scatter plot
         scat_plot.set_clim(0.0, 15.0)  # affects colorbar range too
         # ------------------------------------------------------------
-
 
         # # Range of axis
         # plt.xlim([80.125, 179.875])
@@ -299,7 +330,7 @@ quit()
 
 
 
-# Weights:
+# Weights from Xie and Xiong:
 # Determined by minimizing the analysis error variance
 
 # Wki is define by solving the linear equation group:
@@ -333,11 +364,6 @@ Ek = (A_k - T_k)^2  # T_k is truth at grid point (k), should be ensemble process
 # E_k_sqr = (E_k)**2
 E_k_sqr = (sigma_k_f)**2 * (1 - sum(W_ki * mu_ki_f))
 # =======================================================================================
-
-
-# =======================================================================================
-# Py version of DIVA and Xie and Xiong 2011
-
 
 
 
