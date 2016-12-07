@@ -42,7 +42,8 @@ from netCDF4 import Dataset
 # from math import sqrt
 import math
 
-print math.pi
+print "I am pi from py: ", math.pi
+print "And I am e from py: ", math.e
 
 
 # Product function
@@ -137,8 +138,8 @@ xstat, ystat = m(lon, lat)
 # # =============================================================================
 # # Radial Basis Function
 
-# interpolation='linear'
-interpolation = 'thin_plate'
+interpolation='linear'
+# interpolation = 'thin_plate'
 # interpolation = 'cubic'
 
 # Comment line below to TURN drizzle ON
@@ -201,9 +202,9 @@ for epsilon_val in epsilon_list:
     # Geospatial calibration of station data to TRMM grid (weights free)
 
         # F0 = G0 + (Fi - Gi)
-        RRo = trmm_precip + Wght_static * (rri - trmm_precip)
+        # RRo = trmm_precip + Wght_static * (rri - trmm_precip)
 
-        print 'Blended precip is: ', RRo
+        # print 'Blended precip is: ', RRo
 
 # ==========================================
 
@@ -218,9 +219,9 @@ for epsilon_val in epsilon_list:
         # params:
 
     # temp
-        N_g0 = 5
-        N_g1 = 7
-        N_g2 = 9
+        N_g0 = 5                                # Temporarily
+        N_g1 = 7                                # Temporarily
+        N_g2 = 9                                # Temporarily
 
         N_eg = N_g0 + N_g1 / 8. + N_g2 / 32.    # Number of equivalent gauges
         N_eg_stat = 20                          # Number of equivalent gauges
@@ -234,7 +235,7 @@ for epsilon_val in epsilon_list:
         Sig_o = 0.15 + 4.09 * rri / (N_eg_stat)
 
     # Satellite error correlation at two separated grid boxes
-        Mij_f = -0.025 + 1.196(math.exp(-h / h0))
+        Mij_f = -0.025 + 1.196*(math.e**-h / h0)
         Mi_o = Mij_o                            # Temporarily
         Mi_f = Mij_f                            # Temporarily
 
@@ -247,6 +248,13 @@ for epsilon_val in epsilon_list:
         W_kj = Mij_f / sum(Mi_f + Mi_o * lambda_i * lambda_j)
 
         Wght_dyn = W_kj
+
+    # Control of derived arguments in dynamic weights derivation
+        # print "Mij_f:" , Mij_f
+        print "Mij_f sum is:" , sum(Mij_f)
+        # print "Dynamic weights are:" , W_kj
+
+        quit()
 
     # Geospatial calibration of station data to TRMM grid (weights free)
 
@@ -318,7 +326,7 @@ for epsilon_val in epsilon_list:
         # plt.show()
 
 # Save as PNG
-        plt.savefig('plots/Precip_blend_' + interpolation + '_spline_smoothin_eq_' +
+        plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + '_spline_smoothin_eq_' +
                     str(smoothing_val) + '_epsilon_' +
                     str(epsilon_val) + '_drizzle_' +
                     drizzle + '_20000610.png',
