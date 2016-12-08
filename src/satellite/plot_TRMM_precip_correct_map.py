@@ -25,6 +25,7 @@ from netCDF4 import Dataset
 from pylab import *
 import math as m
 from mpl_toolkits.basemap import Basemap, cm
+np.set_printoptions(threshold='nan')  # print full array
 
 
 # Define some paths
@@ -379,19 +380,16 @@ plt.title('TRMM precipitation | w/ Land Sea Mask | 10.06.2010', size=20)
 
 # Save plot as PNG
 # ------------------------------------------------------------------------------------
-#
-# Without LS mask one day
-#
-# savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_wo_LS_mask'
-#         '_IN.png',optimize=True,quality=85,dpi=300)
 
 # With LS mask one day
 #
-savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_mask_'
-        'IN_10062010_white_zero_mm_min_one day.png',
-        bbox_inches='tight',
-        optimize=True,
-        quality=85,
-        dpi=300)
+# savefig('plots/Precip_TRMM_from_LS_mask_update_contourf_new_lat_0_correct_grid_w_LS_mask_'
+#         'IN_10062010_white_zero_mm_min_one day.png',
+#         bbox_inches='tight',
+#         optimize=True,
+#         quality=85,
+#         dpi=300)
+
+plt.show()
 
 quit()

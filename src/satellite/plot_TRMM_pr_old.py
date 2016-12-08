@@ -12,11 +12,8 @@ from netCDF4 import Dataset
 from pylab import *
 import math as m
 from mpl_toolkits.basemap import Basemap, cm
-#import ctypes
-#import icclim
-import datetime
-#import icclim.util.callback as callback
-#cb = callback.defaultCallback
+np.set_printoptions(threshold='nan')  # print full array
+from mpl_toolkits.basemap import maskoceans
 
 
 print
@@ -74,15 +71,11 @@ print
 print
 
 
-
-
 #ncfile1 = Dataset(file_pr,'r')
 ncfile1 = Dataset(in_path+file_name,'r')
 nc_lsmask_trmm = Dataset(in_path_lsmsk_TRMM+file_lsm_TRMM,'r')
 
 #ncfile2 = Dataset(in_path_lsmsk_TRMM+file_lsm_TRMM,'r')
-
-#quit()
 
 # Extract the actuall variable
 trmm_precip = ncfile1.variables['r'][0,:,:]
@@ -91,7 +84,7 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:,:]
 
 
 #trmm_lsmask = trmm_lsmask/100.
-print trmm_lsmask
+# print trmm_lsmask
 
 # Python replacing syntax
 # arr[arr > 255] = x
@@ -104,14 +97,13 @@ trmm_lsmask[trmm_lsmask==100]=0.
 
 # New mask should be: 1=land, 0=sea
 # Multiply woth TRMM data when plotting
-print trmm_lsmask
+# print trmm_lsmask
 
 #quit()
 
 print "TRMM precip is: ", trmm_precip
 print
 
-#quit()
 
 lons = ncfile1.variables['longitude']
 lats = ncfile1.variables['latitude']
@@ -137,18 +129,13 @@ fig = plt.figure(figsize=(xsize,ysize))
 
 # Map projection
 # =============================================================
-# m = Basemap(projection='stere',        # Graciosa coords
-# 	        lat_0=40, lon_0=-15,
-# 	        llcrnrlon=-40, llcrnrlat=30,
-# 	        urcrnrlon=10, urcrnrlat=50)
-
-# Resolution on 'i' (intermediate) makes good enough coastline. 
-# Use 'f' (full) for showing off
-m = Basemap(projection='stere',                      # SACA gridded data set coordinates
-	        lat_0=0, lon_0=130,
-	        llcrnrlon=80.125, llcrnrlat=-24.875,
-	        urcrnrlon=179.875, urcrnrlat=25.125,
-	        resolution='i')
+m = Basemap(projection='gall',
+            # lat_0=0.125, lon_0=130,
+            llcrnrlon=80.125, llcrnrlat=-24.875,
+            urcrnrlon=179.875, urcrnrlat=25.125,
+            # fix_aspect=True,
+            area_thresh=100.0,
+            resolution='i')
 
 #x, y = m(lons,lats)
 #print lons
@@ -225,6 +212,9 @@ cbar = m.colorbar(cs)
 # Set label
 cbar.set_label('mm')
 
-savefig('plots/trmm_precip_SACA_area.png',optimize=True,quality=85,dpi=900)
+# savefig('plots/trmm_precip_SACA_area.png',optimize=True,quality=85,dpi=900)
 
-#plt.show()
+plt.show()
+
+
+quit()

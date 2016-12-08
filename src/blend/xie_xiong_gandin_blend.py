@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
 
 # Make python script executable
 #!/usr/bin/python
@@ -72,6 +73,9 @@ trmm_precip = nc_trmm.variables['r'][161, :, :]   # [time, lat, lon], 0= 01.01.2
 lons = nc_trmm.variables['longitude']
 lats = nc_trmm.variables['latitude']
 
+# OLD part where manual filtering so sea points was still needed. Now nc files
+# pre filtered for sea points. Remove completele later.
+# 
 # Land Sea Maks TRMM specific
 file_lsm_TRMM = 'TMPA_mask_georef_SACA_match_TRMM_grid.nc'
 nc_lsmask_trmm = Dataset(in_path_lsmsk_TRMM + file_lsm_TRMM, 'r')
@@ -82,13 +86,14 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 # Import data from ASCII CSV file
 # ==========================================================================================
 #
-gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/"+
+                       "saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
                        delimiter=',',
                        dtype=[('lat', float), ('lon', float), ('rr', float)],
                        usecols=(2, 3, 0),
                        missing_values=-9999,
                        usemask=True
-                       )
+                      )
 
 # Make lat & lon easier to use down the line:
 lat = gauges['lat']
@@ -99,8 +104,8 @@ rr = gauges['rr']
 # All land points convert to 1
 trmm_lsmask[trmm_lsmask != 100] = 1.
 # All sea points convert to 0
-trmm_lsmask[trmm_lsmask == 100] = 0.
-# trmm_lsmask[trmm_lsmask==100]=np.nan
+# trmm_lsmask[trmm_lsmask == 100] = 0.
+trmm_lsmask[trmm_lsmask==100]=np.nan
 
 # ==========================================================================================
 
@@ -156,6 +161,8 @@ elif drizzle == 'ON':
 # ----------------------------------------------------------
 
 
+
+
 # For Thin Plate spline input data is pre and post-processed:
 # 1. Square root the data
 # 2. TPS run
@@ -165,7 +172,8 @@ rr = np.sqrt(rr)
 
 epsilon_list = [1]                # From 1 - million
 
-smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
+# smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
+smoothing_vals = [10]
 # smoothing_vals = ['automatic']
 
 for epsilon_val in epsilon_list:
@@ -188,8 +196,10 @@ for epsilon_val in epsilon_list:
         # Now square all processed precip back (normalize precip matrix too)
         rri = rri * rri
 
-        print 'Interpolated station precip is: ', rri
+        # print 'Interpolated station precip is: ', rri
 
+    # Apply TRMM Land-Sea mask to the rain gauge station analysis:
+        rri = rri * trmm_lsmask
 
 # Intellective objective analysis ----------------------------------------------------------
 
@@ -212,7 +222,7 @@ for epsilon_val in epsilon_list:
     # Most important is to quantify 3 errors here
     # ----------------------------------------------------------------------------------------
 
-    # Satellite retrieval error (calibrated to stations)
+    # Satellite retrieval error (calibrated to stations in China)
         Sig_f = 2.93 + 9.845 * trmm_precip
 
     # Rain gauge error est: ================
@@ -250,18 +260,26 @@ for epsilon_val in epsilon_list:
         Wght_dyn = W_kj
 
     # Control of derived arguments in dynamic weights derivation
+
+        # print "Sig_o:", Sig_o
+        print
+        # print "Sig_f:", Sig_f
+        print
+        # print "TRMM precip is: ", trmm_precip
+        print
+        print "Raingauge precip is: ", rri
         # print "Mij_f:" , Mij_f
-        print "Mij_f sum is:" , sum(Mij_f)
+        # print "Mij_f sum is:" , sum(Mij_f*lambda_i)
         # print "Dynamic weights are:" , W_kj
 
-        quit()
+        # quit()
 
     # Geospatial calibration of station data to TRMM grid (weights free)
 
         # F0 = G0 + (Fi - Gi)
         RRo = trmm_precip + Wght_dyn * (rri - trmm_precip)
 
-        print 'Blended precip is: ', RRo
+        # print 'Blended precip is: ', RRo
 
 # ==========================================
 
@@ -270,7 +288,11 @@ for epsilon_val in epsilon_list:
     # Plot Interpolated fiedld (analysis)
         # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
         # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)      # Blue cmap
-        im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
+        # im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
+        # im = m.pcolor(xnew, ynew, trmm_precip, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+        # im = m.pcolor(xnew, ynew, 100*Sig_o, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+        im = m.pcolor(xnew, ynew, rri, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+
         # Plot Stations
         # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
         scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.Blues, zorder=2)
@@ -323,17 +345,17 @@ for epsilon_val in epsilon_list:
                          # pad=0.04,
                          )
 
-        # plt.show()
+        plt.show()
 
 # Save as PNG
-        plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + '_spline_smoothin_eq_' +
-                    str(smoothing_val) + '_epsilon_' +
-                    str(epsilon_val) + '_drizzle_' +
-                    drizzle + '_20000610.png',
-                    bbox_inches='tight',
-                    optimize=True,
-                    quality=85,
-                    dpi=300)
+        # plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + '_spline_smoothin_eq_' +
+        #             str(smoothing_val) + '_epsilon_' +
+        #             str(epsilon_val) + '_drizzle_' +
+        #             drizzle + '_20000610.png',
+        #             bbox_inches='tight',
+        #             optimize=True,
+        #             quality=85,
+        #             dpi=300)
     # --------------------------------------------------------------------
 
 quit()
