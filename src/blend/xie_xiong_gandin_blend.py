@@ -48,8 +48,13 @@ print "And I am e from py: ", math.e
 
 
 # Product function
-def prod(iterable):
-    return reduce(operator.mul, iterable, 1)
+# def prod(iterable):
+#     """Iteration for calculating sums"""
+#     return reduce(operator.mul, iterable, 1)
+
+def square(n):
+    """Square function"""
+    return n**2
 
 
 # TRMM bound
@@ -63,8 +68,8 @@ in_path_lsmsk_TRMM = "/nobackup/users/stepanov/TRMM_data/Land_Sea_Mask/"
 # Define paths to NC files
 # ===========================================================================================
 # TRMM file for SACA area, Land only
-file_trmm = '3B42_daily.2000_georef_SACA_land_only.nc'  # work station
-# 3b42-daily.2000-georef-saca-land-only.nc            # rMBP
+file_trmm = '3B42_daily.2000_georef_SACA_land_only.nc'       # work station
+# file_trmm = '3b42-daily.2000-georef-saca-land-only.nc'     # rMBP
 #
 nc_trmm = Dataset(in_path + file_trmm, 'r')
 
@@ -74,17 +79,17 @@ lons = nc_trmm.variables['longitude']
 lats = nc_trmm.variables['latitude']
 
 # OLD part where manual filtering so sea points was still needed. Now nc files
-# pre filtered for sea points. Remove completele later.
+# pre filtered for sea points. Remove completely later.
 # 
 # Land Sea Maks TRMM specific
 file_lsm_TRMM = 'TMPA_mask_georef_SACA_match_TRMM_grid.nc'
 nc_lsmask_trmm = Dataset(in_path_lsmsk_TRMM + file_lsm_TRMM, 'r')
 trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 
-# ==========================================================================================
+# ============================================================================================
 
 # Import data from ASCII CSV file
-# ==========================================================================================
+# ============================================================================================
 #
 gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/"+
                        "saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
@@ -101,26 +106,30 @@ lon = gauges['lon']
 rr = gauges['rr']
 
 
+# Land Sea mask from NASA ------------------
+#
 # All land points convert to 1
 trmm_lsmask[trmm_lsmask != 100] = 1.
 # All sea points convert to 0
-# trmm_lsmask[trmm_lsmask == 100] = 0.
-trmm_lsmask[trmm_lsmask==100]=np.nan
+# trmm_lsmask[trmm_lsmask == 100] = 0.0
+# trmm_lsmask[trmm_lsmask == 100] = 9999
+trmm_lsmask[trmm_lsmask == 100] = np.NaN
+# trmm_lsmask[trmm_lsmask == 100] = None
 
-# ==========================================================================================
-
-# print rr
-# quit()
+# ------------------------------------------
 
 
 # Design figure
-# ================================================================
+# ==============================================================
 xsize = 20
 ysize = 10
 
 fig = plt.figure(figsize=(xsize, ysize))
 # fig, ax = plt.subplots(figsize=(xsize, ysize))
-# ================================================================
+
+# Adjust margins
+fig.subplots_adjust(left=0.04, right=0.96, top=0.98, bottom=0.02)
+# ==============================================================
 
 m = Basemap(projection='gall',
             llcrnrlon=80.125,              # lower-left corner longitude
@@ -129,79 +138,77 @@ m = Basemap(projection='gall',
             urcrnrlat=25.125,               # upper-right corner latitude
             resolution='i',
             area_thresh=100.0,
-            )
+           )
 
 
 # # Create regular grid from TRMM lon/lat
 xi, yi = np.meshgrid(lons, lats)
 xnew, ynew = m(xi, yi)
 
-# Create grid from stations data:
+# Create GRID from STATIONS data:
 xstat, ystat = m(lon, lat)
 
-# # Interpolation
-# # =============================================================================
-# # Radial Basis Function
+# Interpolation
+# ==============================================================
+# Radial Basis Function
 
-interpolation='linear'
+interpolation = 'linear'
 # interpolation = 'thin_plate'
 # interpolation = 'cubic'
 
-# Comment line below to TURN drizzle ON
+# Comment line below to TURN drizzle ON ------------------------
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
 drizzle = 'ON'          # Keep rain in range 0-1mm in the spline
 
 
-# Switch for 0-1mm/day range filtering to do log smoothing:
-# ----------------------------------------------------------
+# Switch for 0-1MM/DAY range filtering to do log smoothing:
+# ---------------------------------------------------------
 if drizzle == 'OFF':
-    rr[rr <= 1.0] = 1.0           # Trick to make rr*2 ln(rr) = 0
-elif drizzle == 'ON':
-    rr == rr
-# ----------------------------------------------------------
+    rr[rr <= 1.0] = 1.0     # Trick to make rr*2 ln(rr) = 0
+# elif drizzle == 'ON':
+    # rr == rr
+# ---------------------------------------------------------
 
-
-
-
-# For Thin Plate spline input data is pre and post-processed:
+# Thin Plate spline input is pre and post-processed in this way:
 # 1. Square root the data
 # 2. TPS run
 # 3. Square the data
 
 rr = np.sqrt(rr)
 
+# Lists of interpolation parameters ----------------------------
 epsilon_list = [1]                # From 1 - million
-
 # smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
-smoothing_vals = [10]
-# smoothing_vals = ['automatic']
+smoothing_vals = [1]
+# smoothing_vals = ['automatic']  # This usually picks zero
+# ---------------------------------------------------------
 
+# Loop through EPSILON and SMOOTHING lists
+#
 for epsilon_val in epsilon_list:
-    #  print 'Now setting epsilon parameter to: ', epsilon_val
 
     for smoothing_val in smoothing_vals:
         print 'Now smoothing with parameter set to: ', smoothing_val
         print 'Now setting epsilon parameter to: ', epsilon_val
 
-        # # Now interpolate with prescribed smoothing parameter (lambda)
+        # Interpolate with prescribed smoothing parameter
         rbf = scipy.interpolate.Rbf(lon, lat, rr,
                                     function=interpolation,
                                     smooth=smoothing_val,
-                                    epsilon=epsilon_val)
-        # Interpolate with automatic smoothing parameter selection
-        # rbf = scipy.interpolate.Rbf(lon, lat, rr, function=interpolation)
+                                    epsilon=epsilon_val
+                                   )
 
         rri = rbf(xi, yi)
 
         # Now square all processed precip back (normalize precip matrix too)
-        rri = rri * rri
+        rri = square(rri)
 
         # print 'Interpolated station precip is: ', rri
 
     # Apply TRMM Land-Sea mask to the rain gauge station analysis:
-        rri = rri * trmm_lsmask
+        rri_analysis = rri * trmm_lsmask
 
-# Intellective objective analysis ----------------------------------------------------------
+# Intellective objective analysis --------------------------------------------------
 
 # Deriving weights =========================
 # ---> Optimal weight matrix via Kalnay manual, Xie paper and Ganding book
@@ -220,7 +227,7 @@ for epsilon_val in epsilon_list:
 
     # Dynamic Optimum Interpolation weight
     # Most important is to quantify 3 errors here
-    # ----------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
 
     # Satellite retrieval error (calibrated to stations in China)
         Sig_f = 2.93 + 9.845 * trmm_precip
@@ -242,7 +249,7 @@ for epsilon_val in epsilon_list:
         Mij_o = 0  # i!=j                       # convert later to IF statement
 
     # Rain gauge error:
-        Sig_o = 0.15 + 4.09 * rri / (N_eg_stat)
+        Sig_o = 0.15 + 4.09 * rri_analysis / (N_eg_stat)
 
     # Satellite error correlation at two separated grid boxes
         Mij_f = -0.025 + 1.196*(math.e**-h / h0)
@@ -267,7 +274,7 @@ for epsilon_val in epsilon_list:
         print
         # print "TRMM precip is: ", trmm_precip
         print
-        print "Raingauge precip is: ", rri
+        print "Raingauge precip is: ", rri_analysis
         # print "Mij_f:" , Mij_f
         # print "Mij_f sum is:" , sum(Mij_f*lambda_i)
         # print "Dynamic weights are:" , W_kj
@@ -277,7 +284,7 @@ for epsilon_val in epsilon_list:
     # Geospatial calibration of station data to TRMM grid (weights free)
 
         # F0 = G0 + (Fi - Gi)
-        RRo = trmm_precip + Wght_dyn * (rri - trmm_precip)
+        RRo = trmm_precip + Wght_dyn * (rri_analysis - trmm_precip)
 
         # print 'Blended precip is: ', RRo
 
@@ -291,7 +298,10 @@ for epsilon_val in epsilon_list:
         # im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
         # im = m.pcolor(xnew, ynew, trmm_precip, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
         # im = m.pcolor(xnew, ynew, 100*Sig_o, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
-        im = m.pcolor(xnew, ynew, rri, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+        # im = m.pcolor(xnew, ynew, rri_analysis, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+        # im = m.pcolor(xnew, ynew, rri, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+        im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+        # im = m.pcolor(xnew, ynew, trmm_lsmask, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
 
         # Plot Stations
         # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
@@ -320,10 +330,6 @@ for epsilon_val in epsilon_list:
         meridians = np.arange(80., 180., 10.)
         m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
 
-        # m.drawlsmask(land_color="#ddaa66",
-        #              ocean_color="#7777ff",
-        #              resolution='l')
-
 
 # -- Colorbar 1 | bottom | interpolated
         cb1 = m.colorbar(im,
@@ -335,27 +341,34 @@ for epsilon_val in epsilon_list:
                          # orientation='vertical',
                          # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0,
                          # 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
-                         )
+                        )
 
 # -- Colorbar 2 | right | stations
         cb2 = m.colorbar(scat_plot,
-                         # orientation='horizontal',
                          label='Station values'
+                         # orientation='horizontal',
                          # fraction=0.046,
                          # pad=0.04,
-                         )
+                        )
 
-        plt.show()
+        # plt.show()
 
 # Save as PNG
-        # plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + '_spline_smoothin_eq_' +
-        #             str(smoothing_val) + '_epsilon_' +
+
+        # plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + 
+        #             '_spline_smoothin_eq_' + str(smoothing_val) + '_epsilon_' +
         #             str(epsilon_val) + '_drizzle_' +
         #             drizzle + '_20000610.png',
         #             bbox_inches='tight',
         #             optimize=True,
         #             quality=85,
         #             dpi=300)
+
+        plt.savefig('plots/test_gridd_errors.png',
+                    # bbox_inches='tight',
+                    optimize=True,
+                    quality=85,
+                    dpi=300)
     # --------------------------------------------------------------------
 
 quit()
