@@ -42,6 +42,8 @@ from netCDF4 import Dataset
 # from matplotlib.colors import Normalize
 # from math import sqrt
 import math
+import numpy.ma as ma
+
 
 print "I am pi from py: ", math.pi
 print "And I am e from py: ", math.e
@@ -113,8 +115,8 @@ trmm_lsmask[trmm_lsmask != 100] = 1.
 # All sea points convert to 0
 # trmm_lsmask[trmm_lsmask == 100] = 0.0
 # trmm_lsmask[trmm_lsmask == 100] = 9999
-trmm_lsmask[trmm_lsmask == 100] = np.NaN
-# trmm_lsmask[trmm_lsmask == 100] = None
+# trmm_lsmask[trmm_lsmask == 100] = np.NaN
+trmm_lsmask[trmm_lsmask == 100] = None
 
 # ------------------------------------------
 
@@ -152,8 +154,8 @@ xstat, ystat = m(lon, lat)
 # ==============================================================
 # Radial Basis Function
 
-interpolation = 'linear'
-# interpolation = 'thin_plate'
+# interpolation = 'linear'
+interpolation = 'thin_plate'
 # interpolation = 'cubic'
 
 # Comment line below to TURN drizzle ON ------------------------
@@ -178,8 +180,8 @@ rr = np.sqrt(rr)
 
 # Lists of interpolation parameters ----------------------------
 epsilon_list = [1]                # From 1 - million
-# smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
-smoothing_vals = [1]
+smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
+# smoothing_vals = [1]
 # smoothing_vals = ['automatic']  # This usually picks zero
 # ---------------------------------------------------------
 
@@ -207,6 +209,9 @@ for epsilon_val in epsilon_list:
 
     # Apply TRMM Land-Sea mask to the rain gauge station analysis:
         rri_analysis = rri * trmm_lsmask
+    # Remove NaN values from analysis (no need to  with trmm mask later any more)
+        rri_final = ma.array(rri_analysis, mask=np.isnan(rri_analysis))
+
 
 # Intellective objective analysis --------------------------------------------------
 
@@ -232,7 +237,7 @@ for epsilon_val in epsilon_list:
     # Satellite retrieval error (calibrated to stations in China)
         Sig_f = 2.93 + 9.845 * trmm_precip
 
-    # Rain gauge error est: ================
+    # Rain gauge error est: ----------------
         # params:
 
     # temp
@@ -262,31 +267,52 @@ for epsilon_val in epsilon_list:
 
         # Equation to solve for dynamic weights:
         # Mki_f = sum(Mi_f + Mi_o * lambda_i * lambda_j) * W_kj  # W_kj is the weight to derive
-        W_kj = Mij_f / sum(Mi_f + Mi_o * lambda_i * lambda_j)
+        # W_kj = Mij_f / sum(Mi_f + Mi_o * lambda_i * lambda_j)   # With sum
+        W_kj = Mij_f / (Mi_f + Mi_o * lambda_i * lambda_j)     # Without sum
 
         Wght_dyn = W_kj
-
-    # Control of derived arguments in dynamic weights derivation
-
-        # print "Sig_o:", Sig_o
-        print
-        # print "Sig_f:", Sig_f
-        print
-        # print "TRMM precip is: ", trmm_precip
-        print
-        print "Raingauge precip is: ", rri_analysis
-        # print "Mij_f:" , Mij_f
-        # print "Mij_f sum is:" , sum(Mij_f*lambda_i)
-        # print "Dynamic weights are:" , W_kj
-
-        # quit()
+# ---------------------------------------------------------------------------------------
 
     # Geospatial calibration of station data to TRMM grid (weights free)
 
         # F0 = G0 + (Fi - Gi)
-        RRo = trmm_precip + Wght_dyn * (rri_analysis - trmm_precip)
+        # RRo = trmm_precip + Wght_dyn * (rri_analysis - trmm_precip)  # Before isnan removal
+        RRo = trmm_precip + Wght_dyn * (rri_final - trmm_precip)       # After isnan removal
+        # RRo = trmm_precip + Wght_static * (rri_final - trmm_precip)
 
         # print 'Blended precip is: ', RRo
+
+# ---------------------------------------------------------------------------------------
+
+    # Control of derived arguments in dynamic weights derivation
+        # -------------------------------
+        log_file_1 = open('logs/Sig_o_xie_blended.log', 'w+')
+        log_file_2 = open('logs/Sig_f_xie_blended.log', 'w+')
+        log_file_3 = open('logs/Lambda_i_xie_blended.log', 'w+')
+        log_file_4 = open('logs/Lambda_j_xie_blended.log', 'w+')
+        log_file_5 = open('logs/Weights_final_xie_blended.log', 'w+')
+        log_file_6 = open('logs/Mij_f_xie_blended.log', 'w+')
+
+        # Gridded fields
+        log_file_7 = open('logs/Trmm_precip.log', 'w+')
+        log_file_8 = open('logs/rg_anal_precip.log', 'w+')
+        log_file_9 = open('logs/blended_precip.log', 'w+')
+
+    # Write derived parameres into files:
+        # -------------------------------
+        print >>log_file_1, 'This is Sig_o coefficient:', Sig_o
+        print >>log_file_2, 'This is Sig_f coefficient:', Sig_f
+        print >>log_file_3, 'This is lambda_i coefficient:', lambda_i
+        print >>log_file_4, 'This is lambda_j coefficient:', lambda_j
+        print >>log_file_5, 'This is final weight coefficient:', Wght_dyn
+        print >>log_file_6, 'This is Mij_f weight coefficient:', Mij_f
+        # Gridded fields
+        print >>log_file_7, 'TRMM precip is: ', trmm_precip
+        print >>log_file_8, 'Raingauge precip w/o NaNs is: ', rri_final
+        print >>log_file_9, 'Blended precip is: ', RRo
+
+
+        # quit()
 
 # ==========================================
 
@@ -294,14 +320,16 @@ for epsilon_val in epsilon_list:
 
     # Plot Interpolated fiedld (analysis)
         # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.Blues, zorder=1)
-        # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)      # Blue cmap
-        # im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)    # Stations cmap
+        # im = m.pcolor(xnew, ynew, RRo, cmap=cm.Blues, zorder=1)                # Blue cmap
+        # im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)            # Stations cmap
         # im = m.pcolor(xnew, ynew, trmm_precip, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
-        # im = m.pcolor(xnew, ynew, 100*Sig_o, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
-        # im = m.pcolor(xnew, ynew, rri_analysis, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
-        # im = m.pcolor(xnew, ynew, rri, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
-        im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
-        # im = m.pcolor(xnew, ynew, trmm_lsmask, cmap=cm.rainbow_r, zorder=1)    # Pure TRMM
+        # im = m.pcolor(xnew, ynew, 100*Sig_o, cmap=cm.rainbow_r, zorder=1)   
+        # im = m.pcolor(xnew, ynew, rri_analysis, cmap=cm.rainbow_r, zorder=1)  
+        # im = m.pcolor(xnew, ynew, rri, cmap=cm.rainbow_r, zorder=1)  
+        # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.rainbow_r, zorder=1) 
+        # im = m.pcolor(xnew, ynew, trmm_lsmask, cmap=cm.rainbow_r, zorder=1)  
+        # im = m.pcolor(xnew, ynew, rri_final, cmap=cm.rainbow_r, zorder=1)      # Final rg anal
+        im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)        # Blend
 
         # Plot Stations
         # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
@@ -310,10 +338,10 @@ for epsilon_val in epsilon_list:
 
 # Color bar properties
     # Color plot
-        im.set_clim(0.0, 30.0)  # affects colorbar range too
+        im.set_clim(0.0, 5.0)  # affects colorbar range too
 
     # Scatter plot
-        scat_plot.set_clim(0.0, 15.0)
+        scat_plot.set_clim(0.0, 10.0)
     # --------------------------------------------------------------------
 
     # # Range of axis
@@ -355,20 +383,20 @@ for epsilon_val in epsilon_list:
 
 # Save as PNG
 
-        # plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + 
-        #             '_spline_smoothin_eq_' + str(smoothing_val) + '_epsilon_' +
-        #             str(epsilon_val) + '_drizzle_' +
-        #             drizzle + '_20000610.png',
-        #             bbox_inches='tight',
-        #             optimize=True,
-        #             quality=85,
-        #             dpi=300)
-
-        plt.savefig('plots/test_gridd_errors.png',
-                    # bbox_inches='tight',
+        plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + 
+                    '_spline_smoothin_eq_' + str(smoothing_val) + '_epsilon_' +
+                    str(epsilon_val) + '_drizzle_' +
+                    drizzle + '_20000610.png',
+                    bbox_inches='tight',
                     optimize=True,
                     quality=85,
                     dpi=300)
+
+        # plt.savefig('plots/test_gridd_errors.png',
+        #             # bbox_inches='tight',
+        #             optimize=True,
+        #             quality=85,
+        #             dpi=300)
     # --------------------------------------------------------------------
 
 quit()
