@@ -159,8 +159,10 @@ xstat, ystat = m(lon, lat)
 # Radial Basis Function
 
 # interpolation = 'linear'
-interpolation = 'thin_plate'
+# interpolation = 'thin_plate'
 # interpolation = 'cubic'
+# interpolation = 'multiquadric'
+interpolation = 'inverse'          # Inverse of multiquadric
 
 # Comment line below to TURN drizzle ON ------------------------
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
@@ -183,7 +185,9 @@ if drizzle == 'OFF':
 rr = np.sqrt(rr)
 
 # Lists of interpolation parameters ----------------------------
-epsilon_list = [1]                # From 1 - million
+# epsilon_list = [1]                # Factor for gaussian or multiquadratics funcs only
+epsilon_list = [1, 10, 100]       # 100 does not work for smoothing above 4
+# epsilon_list = ['automatic']
 smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
 # smoothing_vals = [1]
 # smoothing_vals = ['automatic']  # This usually picks zero
@@ -290,17 +294,44 @@ for epsilon_val in epsilon_list:
 
     # Control of derived arguments in dynamic weights derivation
         # -------------------------------
-        log_file_1 = open('logs/Sig_o_xie_blended.log', 'w+')
-        log_file_2 = open('logs/Sig_f_xie_blended.log', 'w+')
-        log_file_3 = open('logs/Lambda_i_xie_blended.log', 'w+')
-        log_file_4 = open('logs/Lambda_j_xie_blended.log', 'w+')
-        log_file_5 = open('logs/Weights_final_xie_blended.log', 'w+')
-        log_file_6 = open('logs/Mij_f_xie_blended.log', 'w+')
+        log_file_1 = open('logs/Sig_o_xie_blended_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
+        log_file_2 = open('logs/Sig_f_xie_blended_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
+        log_file_3 = open('logs/Lambda_i_xie_blended_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
+        log_file_4 = open('logs/Lambda_j_xie_blended_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
+        log_file_5 = open('logs/Weights_final_xie_blended_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
+        log_file_6 = open('logs/Mij_f_xie_blended_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
 
         # Gridded fields
-        log_file_7 = open('logs/Trmm_precip.log', 'w+')
-        log_file_8 = open('logs/rg_anal_precip.log', 'w+')
-        log_file_9 = open('logs/blended_precip.log', 'w+')
+        log_file_7 = open('logs/Trmm_precip_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
+        log_file_8 = open('logs/rg_anal_precip_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
+        log_file_9 = open('logs/blended_precip_spline_smoothin_eq_'
+                          + interpolation
+                          + '_spline_smoothin_eq_' + str(smoothing_val)
+                          + '_epsilon_' + str(epsilon_val) + '.log', 'w+')
 
     # Write derived parameres into files:
         # -------------------------------
