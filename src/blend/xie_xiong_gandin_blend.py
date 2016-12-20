@@ -154,11 +154,15 @@ xstat, ystat = m(lon, lat)
 # ==============================================================
 # Radial Basis Function
 
+# Piece-wise smooth RBFs ==============
 # interpolation = 'linear'
 # interpolation = 'thin_plate'
 # interpolation = 'cubic'
+
+# Infinitely smooth RBFs ==============
 # interpolation = 'multiquadric'
-interpolation = 'inverse'          # Inverse of multiquadric
+# interpolation = 'inverse'          # Inverse of multiquadric
+interpolation = 'gaussian'
 
 # Comment line below to TURN drizzle ON ------------------------
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
