@@ -158,11 +158,15 @@ xstat, ystat = m(lon, lat)
 # ==============================================================
 # Radial Basis Function
 
+# Piece-wise smooth RBFs ==============
 # interpolation = 'linear'
 # interpolation = 'thin_plate'
 # interpolation = 'cubic'
-# interpolation = 'multiquadric'
-interpolation = 'inverse'          # Inverse of multiquadric
+
+# Infinitely smooth RBFs ==============
+interpolation = 'multiquadric'
+# interpolation = 'inverse'          # Inverse of multiquadric
+# interpolation = 'gaussian'
 
 # Comment line below to TURN drizzle ON ------------------------
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
@@ -185,11 +189,13 @@ if drizzle == 'OFF':
 rr = np.sqrt(rr)
 
 # Lists of interpolation parameters ----------------------------
-# epsilon_list = [1]                # Factor for gaussian or multiquadratics funcs only
-epsilon_list = [1, 10, 100]       # 100 does not work for smoothing above 4
+epsilon_list = [1]                # Factor for gaussian or multiquadratics funcs only
+# epsilon_list = [1, 10, 100]       # 100 does not work for smoothing above 4
+# epsilon_list = [10]       # 100 does not work for smoothing above 4
 # epsilon_list = ['automatic']
-smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
-# smoothing_vals = [1]
+
+# smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
+smoothing_vals = [1]
 # smoothing_vals = ['automatic']  # This usually picks zero
 # ---------------------------------------------------------
 
@@ -418,7 +424,7 @@ for epsilon_val in epsilon_list:
 
 # Save as PNG
 
-        plt.savefig('plots/Precip_blend_dynamic_weight_' + interpolation + 
+        plt.savefig('plots/sat_blend/Precip_blend_dynamic_weight_' + interpolation + 
                     '_spline_smoothin_eq_' + str(smoothing_val) + '_epsilon_' +
                     str(epsilon_val) + '_drizzle_' +
                     drizzle + '_20000610.png',
@@ -433,5 +439,141 @@ for epsilon_val in epsilon_list:
         #             quality=85,
         #             dpi=300)
     # --------------------------------------------------------------------
+
+
+plt.clf()   # Clear figure
+
+# Plot raingauge analysis only
+# =====================================
+
+# Loop through EPSILON and SMOOTHING lists
+#
+for epsilon_val in epsilon_list:
+
+    for smoothing_val in smoothing_vals:
+        print 'Now smoothing with parameter set to: ', smoothing_val
+        print 'Now setting epsilon parameter to: ', epsilon_val
+
+        # Interpolate with prescribed smoothing parameter
+        rbf = scipy.interpolate.Rbf(lon, lat, rr,
+                                    function=interpolation,
+                                    smooth=smoothing_val,
+                                    epsilon=epsilon_val
+                                   )
+
+        im = m.pcolor(xnew, ynew, rri_final, cmap=cm.rainbow_r, zorder=1)  
+
+
+
+        scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.Blues, zorder=2)
+    # --------------------------------------------------------------------
+
+# Color bar properties
+    # Color plot
+        im.set_clim(0.0, 5.0)  # affects colorbar range too
+
+    # Scatter plot
+        scat_plot.set_clim(0.0, 10.0)
+    # --------------------------------------------------------------------
+
+    # # Range of axis
+        # plt.xlim([80.125, 179.875])
+        # plt.ylim([-24.875, 25.125])
+
+    # draw coastlines, country boundaries, fill continents.
+        m.drawcoastlines(linewidth=0.75)
+        m.drawcountries(linewidth=0.75)
+        # draw parallels
+        parallels = np.arange(-40., 40, 10.)
+        m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
+        # draw meridians
+        meridians = np.arange(80., 180., 10.)
+        m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
+
+
+# -- Colorbar 1 | bottom | interpolated
+        cb1 = m.colorbar(im,
+                         location='bottom',
+                         label='Interpolated stations precip'
+                         # fontsize='14'
+                         # location='right'
+                         # cax=position
+                         # orientation='vertical',
+                         # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0,
+                         # 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
+                        )
+
+# -- Colorbar 2 | right | stations
+        cb2 = m.colorbar(scat_plot,
+                         label='Station values'
+                         # orientation='horizontal',
+                         # fraction=0.046,
+                         # pad=0.04,
+                        )
+
+        # plt.show()
+
+# Save as PNG
+
+        plt.savefig('plots/gauge_analysis/Precip_gauge_analysis_' + interpolation + 
+                    '_spline_smoothin_eq_' + str(smoothing_val) + '_epsilon_' +
+                    str(epsilon_val) + '_drizzle_' +
+                    drizzle + '_20000610.png',
+                    bbox_inches='tight',
+                    optimize=True,
+                    quality=85,
+                    dpi=300)
+
+# --------------------------------------------------------------------
+
+plt.clf()   # Clear figure
+
+im = m.pcolor(xnew, ynew, trmm_precip, cmap=cm.rainbow_r, zorder=1)  
+
+
+# Color bar properties
+# Color plot
+im.set_clim(0.0, 5.0)  # affects colorbar range too
+
+# Scatter plot
+# scat_plot.set_clim(0.0, 10.0)
+# --------------------------------------------------------------------
+
+# # Range of axis
+# plt.xlim([80.125, 179.875])
+# plt.ylim([-24.875, 25.125])
+
+# draw coastlines, country boundaries, fill continents.
+m.drawcoastlines(linewidth=0.75)
+m.drawcountries(linewidth=0.75)
+# draw parallels
+parallels = np.arange(-40., 40, 10.)
+m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=10)
+# draw meridians
+meridians = np.arange(80., 180., 10.)
+m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=10)
+
+
+# -- Colorbar 1 | bottom | interpolated
+cb1 = m.colorbar(im,
+                 location='bottom',
+                 label='Interpolated stations precip'
+                 # fontsize='14'
+                 # location='right'
+                 # cax=position
+                 # orientation='vertical',
+                 # ticks=[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0,
+                 # 35.0, 40.0, 45.0, 50.0, 55.0, 60.0])
+                )
+
+
+# Save as PNG
+
+plt.savefig('plots/trmm/Precip_trmm_drizzle_' +
+            drizzle + '_20000610.png',
+            bbox_inches='tight',
+            optimize=True,
+            quality=85,
+            dpi=300)
 
 quit()

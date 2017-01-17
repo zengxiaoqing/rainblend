@@ -16,4 +16,5 @@ ascii_out
 TRMM_nc
 src/stations/plots
 
-
+# Log files
+*.log
