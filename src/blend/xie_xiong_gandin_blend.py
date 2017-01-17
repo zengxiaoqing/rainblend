@@ -90,6 +90,7 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 
 # ============================================================================================
 
+
 # Import data from ASCII CSV file
 # ============================================================================================
 #
@@ -160,9 +161,9 @@ xstat, ystat = m(lon, lat)
 # interpolation = 'cubic'
 
 # Infinitely smooth RBFs ==============
-interpolation = 'multiquadric'
+# interpolation = 'multiquadric'
 # interpolation = 'inverse'          # Inverse of multiquadric
-# interpolation = 'gaussian'
+interpolation = 'gaussian'
 
 # Comment line below to TURN drizzle ON ------------------------
 # drizzle = 'OFF'       # Trick to make rr*2 ln(rr) = 0
@@ -186,12 +187,12 @@ rr = np.sqrt(rr)
 
 # Lists of interpolation parameters ----------------------------
 epsilon_list = [1]                # Factor for gaussian or multiquadratics funcs only
-# epsilon_list = [1, 10, 100]       # 100 does not work for smoothing above 4
-# epsilon_list = [10]       # 100 does not work for smoothing above 4
+# epsilon_list = [1, 10, 100]     # 100 does not work for smoothing above 4
+# epsilon_list = [10]             # 100 does not work for smoothing above 4
 # epsilon_list = ['automatic']
 
 # smoothing_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 40, 50, 100]
-smoothing_vals = [1]
+smoothing_vals = [100]
 # smoothing_vals = ['automatic']  # This usually picks zero
 # ---------------------------------------------------------
 
@@ -242,18 +243,18 @@ for epsilon_val in epsilon_list:
 
     # Dynamic Optimum Interpolation weight
     # Most important is to quantify 3 errors here
+    # 1. Satellite retrieval error
+    # 2. Rain gauge error
+    # 3. Satellite error correlation between neighboring boxes
     # ------------------------------------------------------------------------------
 
-    # Satellite retrieval error (calibrated to stations in China)
+    # Satellite retrieval error (calibrated to stations in China/N.Korea)
         Sig_f = 2.93 + 9.845 * trmm_precip
 
     # Rain gauge error est: ----------------
-        # params:
-
-    # temp
-        N_g0 = 5                                # Temporarily
-        N_g1 = 7                                # Temporarily
-        N_g2 = 9                                # Temporarily
+        N_g0 = 9                                # Temp values for N_g0, N_g1 and N_g2
+        N_g1 = 7
+        N_g2 = 5
 
         N_eg = N_g0 + N_g1 / 8. + N_g2 / 32.    # Number of equivalent gauges
         N_eg_stat = 20                          # Number of equivalent gauges
@@ -261,24 +262,25 @@ for epsilon_val in epsilon_list:
         h = 100.0                               # Temporarily
 
         Mij_o = 1  # i=j
-        Mij_o = 0  # i!=j                       # convert later to IF statement
+        # Mij_o = 0  # i!=j                       # convert later to IF statement
 
     # Rain gauge error:
-        Sig_o = 0.15 + 4.09 * rri_analysis / (N_eg_stat)
+        # Sig_o = 0.15 + 4.09 * rri_final / (N_eg_stat)  # changed to rri_final from rri_analysis 
+        Sig_o = 0.15 + 4.09 * rri_final / (N_eg)  # changed to rri_final from rri_analysis 
 
-    # Satellite error correlation at two separated grid boxes
+    # Satellite error correlation betweem the two connecting grid boxes
         Mij_f = -0.025 + 1.196*(math.e**-h / h0)
         Mi_o = Mij_o                            # Temporarily
         Mi_f = Mij_f                            # Temporarily
 
     # Combined params:
         lambda_i = Sig_o / Sig_f
-        lambda_j = Sig_o / Sig_f  # to change
+        lambda_j = Sig_o / Sig_f  # to change this one
 
         # Equation to solve for dynamic weights:
-        # Mki_f = sum(Mi_f + Mi_o * lambda_i * lambda_j) * W_kj  # W_kj is the weight to derive
-        # W_kj = Mij_f / sum(Mi_f + Mi_o * lambda_i * lambda_j)   # With sum
-        W_kj = Mij_f / (Mi_f + Mi_o * lambda_i * lambda_j)     # Without sum
+        # Mki_f = sum(Mi_f + Mi_o * lambda_i * lambda_j) * W_kj    # W_kj is the weight to derive
+        # W_kj = Mij_f / sum(Mi_f + Mi_o * lambda_i * lambda_j)    # With sum
+        W_kj = Mij_f / (Mi_f + Mi_o * lambda_i * lambda_j)         # Without sum
 
         Wght_dyn = W_kj
 # ---------------------------------------------------------------------------------------
@@ -286,9 +288,14 @@ for epsilon_val in epsilon_list:
     # Geospatial calibration of station data to TRMM grid (weights free)
 
         # F0 = G0 + (Fi - Gi)
-        # RRo = trmm_precip + Wght_dyn * (rri_analysis - trmm_precip)  # Before isnan removal
-        RRo = trmm_precip + Wght_dyn * (rri_final - trmm_precip)       # After isnan removal
-        # RRo = trmm_precip + Wght_static * (rri_final - trmm_precip)
+        # RRo = trmm_precip + Wght_dyn * (rri_analysis - trmm_precip)    # Before isnan removal
+        # RRo = trmm_precip + Wght_dyn * (rri_final - trmm_precip)       # After isnan removal
+        #
+        # Tests for combinations
+        # RRo = trmm_precip - rri_final +3           # test 1, success
+        # RRo = trmm_precip + Wght_dyn * rri_final   # test 2, success
+        RRo = trmm_precip + Wght_dyn * (rri_final - trmm_precip)  # test 3
+        
 
         # print 'Blended precip is: ', RRo
 
@@ -366,7 +373,7 @@ for epsilon_val in epsilon_list:
         # im = m.pcolor(xnew, ynew, rri*trmm_lsmask, cmap=cm.rainbow_r, zorder=1) 
         # im = m.pcolor(xnew, ynew, trmm_lsmask, cmap=cm.rainbow_r, zorder=1)  
         # im = m.pcolor(xnew, ynew, rri_final, cmap=cm.rainbow_r, zorder=1)      # Final rg anal
-        im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)        # Blend
+        im = m.pcolor(xnew, ynew, RRo, cmap=cm.rainbow_r, zorder=1)              # Blend
 
         # Plot Stations
         # scat_plot = m.scatter(xstat, ystat, 50, c=rr, cmap=cm.cool, zorder=2)
@@ -435,6 +442,54 @@ for epsilon_val in epsilon_list:
         #             quality=85,
         #             dpi=300)
     # --------------------------------------------------------------------
+
+# Now write blend into NetCDF file    
+# =====================================
+
+
+# Create new NetCDF files to write the blended precipitation in
+# ============================================================================================
+        blended_nc = Dataset('/usr/people/stepanov/github/TRMM_blend/nc_out/test.nc',
+                             'w',
+                             format='NETCDF4_CLASSIC')
+
+        print "Format to host blended dataset is: ", blended_nc.file_format 
+
+# Create dimensions
+        lat_blend = blended_nc.createDimension('lat', 201)
+        lon_blend = blended_nc.createDimension('lon', 400) 
+        time_blend = blended_nc.createDimension('time', None) 
+
+        print "Blended NC file lat is: ", len(lat)
+        print "Blended NC file lon is: ", len(lon)
+
+        print type(RRo)
+        print "Shape of blended variable", RRo.shape
+
+
+# Create variables
+        precip = blended_nc.createVariable('RRo',
+                                           'd',
+                                           ('time',
+                                            'lat',
+                                            'lon')
+                                          )
+
+        # time = blended_nc.createVariable('test', 'd', ('time',))
+        # data = blended_nc.variables['RRo'][:, :]
+
+        precip[:] = RRo
+
+
+        # # create the variable (4 byte integer in this case)
+        # # first argument is name of variable, second is datatype, third is
+        # # a tuple with the names of dimensions.
+        # data = ncfile.createVariable('data',dtype('int32').char,('x','y'))
+        # # write data to variable.
+        # data[:] = data_out
+
+quit()        
+
 
 
 plt.clf()   # Clear figure
