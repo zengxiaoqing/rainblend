@@ -34,6 +34,7 @@ from mpl_toolkits.basemap import Basemap
 # from mpl_toolkits.basemap import maskoceans
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy import dtype
 # import matplotlib
 import matplotlib.cm as cm
 import scipy.interpolate
@@ -79,6 +80,11 @@ nc_trmm = Dataset(in_path + file_trmm, 'r')
 trmm_precip = nc_trmm.variables['r'][161, :, :]   # [time, lat, lon], 0= 01.01.2013 (python)
 lons = nc_trmm.variables['longitude']
 lats = nc_trmm.variables['latitude']
+
+print nc_trmm.variables
+print trmm_precip.shape
+
+# quit()
 
 # OLD part where manual filtering so sea points was still needed. Now nc files
 # pre filtered for sea points. Remove completely later.
@@ -449,46 +455,68 @@ for epsilon_val in epsilon_list:
 
 # Create new NetCDF files to write the blended precipitation in
 # ============================================================================================
-        blended_nc = Dataset('/usr/people/stepanov/github/TRMM_blend/nc_out/test.nc',
+        blended_nc = Dataset('/usr/people/stepanov/github/TRMM_blend/'+
+                             'nc_out/precip_satSACA_year2000.nc',
                              'w',
                              format='NETCDF4_CLASSIC')
 
         print "Format to host blended dataset is: ", blended_nc.file_format 
 
-# Create dimensions
+# Create dimensions =====================================================================
         lat_blend = blended_nc.createDimension('lat', 201)
         lon_blend = blended_nc.createDimension('lon', 400) 
         time_blend = blended_nc.createDimension('time', None) 
 
-        print "Blended NC file lat is: ", len(lat)
-        print "Blended NC file lon is: ", len(lon)
+        # print "Blended NC file lat is: ", len(lat)
+        # print "Blended NC file lon is: ", len(lon)
 
-        print type(RRo)
-        print "Shape of blended variable", RRo.shape
+        # print type(RRo)
+        # print "Shape of blended variable", RRo.shape
 
 
-# Create variables
-        precip = blended_nc.createVariable('RRo',
+# Create variables ======================================================================
+
+    # Coordinate variables
+        lat_blend = blended_nc.createVariable('latitude', dtype('float32').char, ('lat',))
+        lon_blend = blended_nc.createVariable('longitude', dtype('float32').char, ('lon',))
+    # Fill NC variable of coordinates with TRMM coords values
+        lat_blend[:] = lats
+        lon_blend[:] = lons
+
+    # Single time step
+        precip = blended_nc.createVariable('r_blend',  # Only one time step
                                            'd',
-                                           ('time',
-                                            'lat',
+                                           ('lat',
                                             'lon')
                                           )
 
-        # time = blended_nc.createVariable('test', 'd', ('time',))
-        # data = blended_nc.variables['RRo'][:, :]
+    # Multiple time steps (soon)
+        # precip = blended_nc.createVariable('precip',   # 2D time series (year or years)
+        #                                    'd',
+        #                                    ('time',
+        #                                     'lat',
+        #                                     'lon')
+        #                                   )
 
-        precip[:] = RRo
+    # Fill the NC variable with blended precip array
+        precip[:, :] = RRo
 
 
-        # # create the variable (4 byte integer in this case)
-        # # first argument is name of variable, second is datatype, third is
-        # # a tuple with the names of dimensions.
-        # data = ncfile.createVariable('data',dtype('int32').char,('x','y'))
-        # # write data to variable.
-        # data[:] = data_out
+# NetCDF attributes
+  # Units        
+    # Precip
+        precip.units = 'mm/day'
+        precip.long_name = ('Daily precipitation blended using TRMM 3B42 and surface rain gauge'+
+                            'analysis w/ multiquadric interpolation on 0.25deg grid')
 
-quit()        
+    # Coordinates
+        lat_blend.units = "degrees_north"
+        lat_blend.long_name = "Latitude"
+        #
+        lon_blend.units = "degrees_south"
+        lon_blend.long_name = "Longitude"
+
+# quit()        
 
 
 
