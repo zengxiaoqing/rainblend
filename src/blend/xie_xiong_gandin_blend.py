@@ -32,49 +32,42 @@
 # ================================================================
 
 from mpl_toolkits.basemap import Basemap
-# from mpl_toolkits.basemap import maskoceans
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import dtype
-# import matplotlib
 import matplotlib.cm as cm
 import scipy.interpolate
 np.set_printoptions(threshold='nan')  # print full array
 from netCDF4 import Dataset
-# from matplotlib.colors import Normalize
-# from math import sqrt
 import math
 import numpy.ma as ma
 
 
+# Confirm math module constant values =
 print "I am pi from py: ", math.pi
 print "And I am e from py: ", math.e
+# =====================================
 
 
-# Product function
-# def prod(iterable):
-#     """Iteration for calculating sums"""
-#     return reduce(operator.mul, iterable, 1)
-
+# Define additional py functions ======
 def square(n):
     """Square function"""
     return n**2
+# =====================================
 
-
-# TRMM bound
-# ==========================================================================================
-in_path = "/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"  # worksttion
-# in_path = "/Users/istepanov/github/TRMM_blend/TRMM_nc/"                          # rMBP
-in_path_lsmsk_TRMM = "/nobackup/users/stepanov/TRMM_data/Land_Sea_Mask/"
-# ==========================================================================================
 
 
 # Define paths to NC files
 # ===========================================================================================
-# TRMM file for SACA area, Land only
-file_trmm = '3B42_daily.2000_georef_SACA_land_only.nc'       # work station
-# file_trmm = '3b42-daily.2000-georef-saca-land-only.nc'     # rMBP
-#
+# Paths
+in_path = ("/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/"+
+           "land_only/")
+
+# Files
+###### TRMM file for SACA area, Land only
+file_trmm = '3B42_daily.2000_georef_SACA_land_only.nc'  # work station, land only
+
+# Convert file to DATASET
 nc_trmm = Dataset(in_path + file_trmm, 'r')
 
 # Extract the precip var &                        # TRMM: [latitude, longitude][201x400]
@@ -82,27 +75,29 @@ trmm_precip = nc_trmm.variables['r'][161, :, :]   # [time, lat, lon], 0= 01.01.2
 lons = nc_trmm.variables['longitude']
 lats = nc_trmm.variables['latitude']
 
+# Some input file/variable properties print to screen
 print nc_trmm.variables
 print trmm_precip.shape
 
-# quit()
-
-# OLD part where manual filtering so sea points was still needed. Now nc files
-# pre filtered for sea points. Remove completely later.
+# Land Sea Mask from TRMM -to filter out sea points in rain gauge analysis
+# =============================================================================
+#
+in_path_lsmsk_TRMM = "/nobackup/users/stepanov/TRMM_data/Land_Sea_Mask/"
 # 
-# Land Sea Maks TRMM specific
+# Land Sea Maks TRMM
 file_lsm_TRMM = 'TMPA_mask_georef_SACA_match_TRMM_grid.nc'
 nc_lsmask_trmm = Dataset(in_path_lsmsk_TRMM + file_lsm_TRMM, 'r')
 trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
+# =============================================================================
 
-# ============================================================================================
 
-
-# Import data from ASCII CSV file
+# Import data from ASCII CSV file (MySQL database data)
 # ============================================================================================
 #
 gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/"+
-                       "saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+                       "saca_stations_query_series_rr_blended_derived_"+
+                       "year2000-06-10"+
+                       ".dat",
                        delimiter=',',
                        dtype=[('lat', float), ('lon', float), ('rr', float)],
                        usecols=(2, 3, 0),
@@ -110,7 +105,7 @@ gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/"+
                        usemask=True
                       )
 
-# Make lat & lon easier to use down the line:
+# Make gauges lat & lon easier to use later on:
 lat = gauges['lat']
 lon = gauges['lon']
 rr = gauges['rr']

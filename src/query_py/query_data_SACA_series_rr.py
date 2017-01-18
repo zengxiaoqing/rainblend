@@ -13,6 +13,7 @@
 # ============================================================================================
 # Updates list
 # 
+# Needs to be able to handle an entire year or more
 # ============================================================================================
 
 
@@ -80,10 +81,10 @@ print 'new date should be in format 2008-11-22: ', datetest
 # year_list=['2011%', '2012%', '2013%', '2014%', '2015%', '2016%']
 
 # Individual year:
-# year_list=['2000%']
+year_list = ['2000%']
 
 # Single day
-year_list=['2000-06-10']
+# year_list=['2000-06-10']
 
 
 # Loop for every year in database
