@@ -28,6 +28,7 @@
 # To be fixed:
 #
 # Define and calculate W_ki
+# Include entire year 2000 series in blending
 # ================================================================
 
 from mpl_toolkits.basemap import Basemap
