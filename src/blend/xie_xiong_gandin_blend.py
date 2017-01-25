@@ -44,26 +44,32 @@ from netCDF4 import Dataset
 # from math import sqrt
 import math
 import numpy.ma as ma
+from datetime import datetime
+import datetime as dt
+import pandas as pd
+# pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_rows', None)
 
 
 print "I am pi from py: ", math.pi
 print "And I am e from py: ", math.e
 
 
-# Product function
-# def prod(iterable):
-#     """Iteration for calculating sums"""
-#     return reduce(operator.mul, iterable, 1)
-
 def square(n):
     """Square function"""
     return n**2
 
+def print_full(x):
+    """Print entire matrix when created using pandas"""
+    pd.set_option('display.max_rows', len(x))
+    # print x
+    pd.reset_option('display.max_rows')
+
+
 
 # TRMM bound
 # ==========================================================================================
-in_path = "/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"  # worksttion
-# in_path = "/Users/istepanov/github/TRMM_blend/TRMM_nc/"                          # rMBP
+in_path = "/nobackup/users/stepanov/TRMM_data/nc/annual_files/cropped/land_only/"
 in_path_lsmsk_TRMM = "/nobackup/users/stepanov/TRMM_data/Land_Sea_Mask/"
 # ==========================================================================================
 
@@ -72,22 +78,16 @@ in_path_lsmsk_TRMM = "/nobackup/users/stepanov/TRMM_data/Land_Sea_Mask/"
 # ===========================================================================================
 # TRMM file for SACA area, Land only
 file_trmm = '3B42_daily.2000_georef_SACA_land_only.nc'       # work station
-# file_trmm = '3b42-daily.2000-georef-saca-land-only.nc'     # rMBP
-#
 nc_trmm = Dataset(in_path + file_trmm, 'r')
 
-# Extract the precip var &                        # TRMM: [latitude, longitude][201x400]
+# Extract the precip var                          # TRMM: [latitude, longitude][201x400]
 trmm_precip = nc_trmm.variables['r'][161, :, :]   # [time, lat, lon], 0= 01.01.2013 (python)
 lons = nc_trmm.variables['longitude']
 lats = nc_trmm.variables['latitude']
 
-print nc_trmm.variables
-print trmm_precip.shape
+# print nc_trmm.variables
+# print trmm_precip.shape
 
-# quit()
-
-# OLD part where manual filtering so sea points was still needed. Now nc files
-# pre filtered for sea points. Remove completely later.
 # 
 # Land Sea Maks TRMM specific
 file_lsm_TRMM = 'TMPA_mask_georef_SACA_match_TRMM_grid.nc'
@@ -99,9 +99,35 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 
 # Import data from ASCII CSV file
 # ============================================================================================
-#
-gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/"+
-                       "saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+# Single DAY
+# gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/"+
+#                        "saca_stations_query_series_rr_blended_derived_year2000-06-10.dat",
+#                        delimiter=',',
+#                        dtype=[('lat', float), ('lon', float), ('rr', float)],
+#                        usecols=(2, 3, 0),
+#                        missing_values=-9999,
+#                        usemask=True
+#                       )
+
+# # Now import Precip, LAT & LON from ASCII dat files for stations:
+# #
+# # SINGLE day
+# lat = gauges['lat']
+# lon = gauges['lon']
+# rr = gauges['rr']
+
+
+# # Import all years TRMM covers
+# year_list = ['1998', '1999', '2000', '2001', '2002', '2003',
+#              '2004', '2005', '2006', '2007', '2008', '2009',
+#              '2010', '2011', '2012', '2013', '2014', '2015'
+#             ]
+             
+
+# for year in year_list:
+
+gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/1998_to_2016/"+
+                       "saca_stations_query_series_rr_blended_derived_year1998.dat",
                        delimiter=',',
                        dtype=[('lat', float), ('lon', float), ('rr', float)],
                        usecols=(2, 3, 0),
@@ -109,11 +135,65 @@ gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/"+
                        usemask=True
                       )
 
-# Make lat & lon easier to use down the line:
+# Now import Precip, LAT & LON from ASCII dat files for stations:
+#
+# SINGLE day
 lat = gauges['lat']
 lon = gauges['lon']
 rr = gauges['rr']
 
+# print lat
+# print lon
+# print rr
+
+dates = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/1998_to_2016/"+
+                      "saca_stations_query_series_rr_blended_derived_year1998.dat", 
+                      delimiter=',', 
+                      dtype=None, 
+                      names=('date'),
+                      # converters={1: str2date},
+                      usecols=[1]
+                     )
+
+# print dates['date']
+
+# Convert to datetime objects
+date = pd.to_datetime(dates['date'], format='%Y-%m-%d')
+print date
+
+
+
+# # -----------------------------------------------------------------------------------
+# Pandas datetime example
+# Mycol = 19900909
+# Mycol =  pd.to_datetime(Mycol, format='%Y%m%d')
+# print Mycol
+# # -----------------------------------------------------------------------------------
+
+# Write imported dates into file
+dates_year = open('dates_year_1998.log', 'w+')
+print >>dates_year, date
+
+
+# print 'Earliest  :', dt.datetime.min
+# print 'Latest    :', dt.date.max
+# print 'Resolution:', dt.date.resolution
+
+# Use datetime object from pandas to blend per day.
+
+for pd.date eq 1998-01-01
+
+
+
+quit()
+
+
+# Precip properties
+# print type(rr)
+# print "Shape of 1 day ascii variable", rr.shape
+# print rr
+
+# ============================================================================================
 
 # Land Sea mask from NASA ------------------
 #
@@ -189,7 +269,9 @@ if drizzle == 'OFF':
 # 2. TPS run
 # 3. Square the data
 
+# Use values for only ONE day
 rr = np.sqrt(rr)
+
 
 # Lists of interpolation parameters ----------------------------
 epsilon_list = [1]                # Factor for gaussian or multiquadratics funcs only
