@@ -10,8 +10,12 @@
 # is applied to TRMM v.7 gridded precipitation dataset to merge
 # with the SACA database station data .
 
+# Note: this should be adjusted later for TRMM data which are not corrected with rain gauges
+# Transition from [3B42RT --> 3B42]
+
 # Paper:
-# A conceptual model for constructing high‐resolution gauge‐satellite merged precipitation analyses
+# A conceptual model for constructing high‐resolution gauge‐satellite merged precipitation
+# analyses
 # P Xie, AY Xiong
 # Journal of Geophysical Research: Atmospheres 116 (D21)
 # NOOA
