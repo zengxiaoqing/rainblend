@@ -54,6 +54,7 @@ import pandas as pd
 # pd.set_option('display.max_columns', None)
 # pd.set_option('display.max_rows', None)
 
+from datetime import timedelta
 
 print "I am pi from py: ", math.pi
 print "And I am e from py: ", math.e
@@ -162,9 +163,20 @@ dates = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/1998_to_
 # print dates['date']
 
 # Convert to datetime objects
+# dates['just_date'] = dates['date'].dt.date
+
 date = pd.to_datetime(dates['date'], format='%Y-%m-%d')
 print date
 
+# First date used from columt dates:
+for i in range(365):
+    print "All dates in year are: ", date[i]
+
+# Write imported dates into file
+    dates_year = open('dates_year_1998.log', 'a+')   # a=append, w=write
+    print >>dates_year, date[i]
+
+quit()
 
 
 # # -----------------------------------------------------------------------------------
@@ -174,22 +186,18 @@ print date
 # print Mycol
 # # -----------------------------------------------------------------------------------
 
-# Write imported dates into file
-dates_year = open('dates_year_1998.log', 'w+')
-print >>dates_year, date
-
-
+# Datetime usage
 # print 'Earliest  :', dt.datetime.min
 # print 'Latest    :', dt.date.max
 # print 'Resolution:', dt.date.resolution
 
 # Use datetime object from pandas to blend per day.
 
-for pd.date eq 1998-01-01
+# for pd.date eq 1998-01-01
 
 
 
-quit()
+# quit()
 
 
 # Precip properties
