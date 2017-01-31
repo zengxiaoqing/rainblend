@@ -131,7 +131,7 @@ trmm_lsmask = nc_lsmask_trmm.variables['landseamask'][:, :]
 
 # for year in year_list:
 
-gauges = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/1998_to_2016/"+
+gauges = np.genfromtxt("/usr/people/stepanov/github/ecad/rainblend/ascii_out/1998_to_2016/"+
                        "saca_stations_query_series_rr_blended_derived_year1998.dat",
                        delimiter=',',
                        dtype=[('lat', float), ('lon', float), ('rr', float)],
@@ -151,7 +151,7 @@ rr = gauges['rr']
 # print lon
 # print rr
 
-dates = np.genfromtxt("/usr/people/stepanov/github/TRMM_blend/ascii_out/1998_to_2016/"+
+dates = np.genfromtxt("/usr/people/stepanov/github/ecad/rainblend/ascii_out/1998_to_2016/"+
                       "saca_stations_query_series_rr_blended_derived_year1998.dat", 
                       delimiter=',', 
                       dtype=None, 
@@ -170,11 +170,15 @@ print date
 
 # First date used from columt dates:
 for i in range(365):
-    print "All dates in year are: ", date[i]
+    # print "All dates in year are: ", date[i]
 
 # Write imported dates into file
     dates_year = open('dates_year_1998.log', 'a+')   # a=append, w=write
     print >>dates_year, date[i]
+
+    AO = Series(ao[:,2], index=date[i])
+
+    print AO
 
 quit()
 
